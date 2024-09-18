@@ -16,4 +16,4 @@ spec:
   interval: 1m0s
   values:
     service:
-        #type: NodePort
+        type: LoadBalancer
