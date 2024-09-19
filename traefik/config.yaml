@@ -14,3 +14,15 @@ spec:
         name: traefik
       version: 31.0.0
   interval: 1m0s
+  values:
+    #service:
+    #    type: LoadBalancer
+    # type: LoadBalancer
+    externalIPs: [130.166.90.189]
+    ports:
+        - port: 80
+          targetPort: web
+          protocol: TCP
+        - port: 443
+          targetPort: websecure
+          protocol: TCP
