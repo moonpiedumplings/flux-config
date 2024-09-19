@@ -20,5 +20,7 @@ spec:
     ports:
         - port: 80
           targetPort: web
+          protocol: TCP
         - port: 443
           targetPort: websecure
+          protocol: TCP
