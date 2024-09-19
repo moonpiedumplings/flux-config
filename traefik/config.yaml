@@ -18,11 +18,11 @@ spec:
     #service:
     #    type: LoadBalancer
     # type: LoadBalancer
-    externalIPs: [130.166.90.189]
+    type: NodePort
     ports:
         - port: 80
           targetPort: web
-          protocol: TCP
+          # protocol: TCP
         - port: 443
           targetPort: websecure
-          protocol: TCP
+          # protocol: TCP
