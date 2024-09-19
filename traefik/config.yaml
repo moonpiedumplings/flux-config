@@ -17,6 +17,7 @@ spec:
   values:
     service:
         type: LoadBalancer
+    type: LoadBalancer
     ports:
         - port: 80
           targetPort: web
