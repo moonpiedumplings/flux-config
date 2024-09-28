@@ -6,7 +6,7 @@ metadata:
   namespace: default
 spec:
   interval: 1m0s
-  path: ./kustomize.yaml
+  path: ./kustomize
   prune: false
   sourceRef:
     kind: GitRepository
