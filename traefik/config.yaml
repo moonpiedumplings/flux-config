@@ -14,3 +14,12 @@ spec:
         name: traefik
       version: 31.0.0
   interval: 1m0s
+  values:
+    certificatesResolvers:
+      myresolver:
+        acme:
+        email: moonpiedumplings2@gmail.com
+        storage: acme.json
+        httpChallenge:
+            # used during the challenge
+            entryPoint: web
