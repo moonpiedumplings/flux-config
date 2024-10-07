@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: podinfo
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+  #annotations:
+  #  traefik.ingress.kubernetes.io/router.entrypoints: web
   namespace: default
 
 spec:
