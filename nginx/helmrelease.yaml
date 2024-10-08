@@ -14,3 +14,7 @@ spec:
         name: ingress-nginx
       # version: 
   interval: 1m0s
+  values:
+    controller:
+      admissionWebhooks:
+        enabled: false
