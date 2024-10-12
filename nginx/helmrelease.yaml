@@ -18,3 +18,5 @@ spec:
     controller:
       admissionWebhooks:
         enabled: false
+      ingressClassResource:
+        default: true
