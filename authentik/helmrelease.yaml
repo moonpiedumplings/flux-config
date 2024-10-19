@@ -1,0 +1,40 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: default
+spec:
+  chart:
+    spec:
+      chart: authentik
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        # Figure out what version I should have
+      # version: 
+  interval: 1m0s
+  values:
+    authentik:
+        secret_key: "PleaseGenerateASecureKey"
+        # This sends anonymous usage-data, stack traces on errors and
+        # performance data to sentry.io, and is fully opt-in
+        error_reporting:
+            enabled: true
+        postgresql:
+            password: "ThisIsNotASecurePassword"
+    server:
+        ingress:
+            ingressClassName: nginx
+            # Change to true when done
+            enabled: false
+            hosts:
+                - authentik.moonpiedumpl.ing
+    postgresql:
+        enabled: true
+        auth:
+            password: "ThisIsNotASecurePassword"
+    redis:
+        enabled: true
+
