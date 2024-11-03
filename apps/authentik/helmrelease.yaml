@@ -26,11 +26,18 @@ spec:
             password: "ThisIsNotASecurePassword"
     server:
         ingress:
-            ingressClassName: nginx
+            # Should default to nginx already
+            # ingressClassName: nginx
             # Change to true when done
-            enabled: false
+            enabled: true
             hosts:
-                - authentik.moonpiedumpl.ing
+                - sso.moonpiedumpl.ing
+            annotations:
+                cert-manager.io/issuer: "letsencrypt-staging"
+                acme.cert-manager.io/http01-edit-in-place: "true"
+            tls:
+              - hosts: [sso.moonpiedumpl.ing]
+                secretName: sso-acme
     postgresql:
         enabled: true
         auth:
