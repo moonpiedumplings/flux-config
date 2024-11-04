@@ -19,5 +19,13 @@ spec:
       enabled: true
       repository: https://github.com/moonpiedumplings/moonpiedumplings.github.io
       branch: gh-pages
-      # 60 is the default
+      # 60 seconds is the default
       interval: 60
+    # ingress:
+    #   enabled: true
+    #   hostname: moonpiedumpl.ing
+    #   annotations:
+    #     cert-manager.io/issuer: "letsencrypt-staging"
+    #     acme.cert-manager.io/http01-edit-in-place: "true"
+    #   tls:
+    #     secret: 
