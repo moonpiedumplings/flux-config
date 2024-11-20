@@ -1,47 +1,66 @@
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: authentik
-  namespace: default
+    name: authentik
+    namespace: default
 spec:
-  chart:
-    spec:
-      chart: authentik
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: authentik
-        # Figure out what version I should have
-      # version: 
-  interval: 1m0s
-  values:
-    authentik:
-        secret_key: "PleaseGenerateASecureKey"
-        # This sends anonymous usage-data, stack traces on errors and
-        # performance data to sentry.io, and is fully opt-in
-        error_reporting:
-            enabled: true
+    chart:
+        spec:
+            chart: authentik
+            reconcileStrategy: ChartVersion
+            sourceRef:
+                kind: HelmRepository
+                name: authentik
+                # Figure out what version I should have
+            # version: 
+    interval: 1m0s
+    values:
+        authentik:
+            secret_key: ENC[AES256_GCM,data:igq7ugHC00ZPZ/0jFjAr/phAeCvhKn0J/avbNe01207L9Q==,iv:1NZuqFBFhc9vXQvTBw8nG20ZpZ6sUUxXrQRUw+KZ4yM=,tag:1QQUWHuiEavXfDi5lhQBFg==,type:str]
+            # This sends anonymous usage-data, stack traces on errors and
+            # performance data to sentry.io, and is fully opt-in
+            error_reporting:
+                enabled: true
+            postgresql:
+                password: ENC[AES256_GCM,data:9yNwAnLg62WePY0yiNBty+ii0CFOm+iSC6GI4ZzAgmGJ4Q==,iv:EsRZzPm8bZHycrhK2ZFPv2fp863pnwy2rGINXiyvCIk=,tag:PObidHEMUMFAmO0K50Nvqg==,type:str]
+        server:
+            ingress:
+                # Should default to nginx already
+                # ingressClassName: nginx
+                # Change to true when done
+                enabled: true
+                hosts:
+                    - sso.moonpiedumpl.ing
+                annotations:
+                    cert-manager.io/issuer: letsencrypt-staging
+                    acme.cert-manager.io/http01-edit-in-place: "true"
+                tls:
+                    - hosts:
+                        - sso.moonpiedumpl.ing
+                      secretName: sso-acme
         postgresql:
-            password: "ThisIsNotASecurePassword"
-    server:
-        ingress:
-            # Should default to nginx already
-            # ingressClassName: nginx
-            # Change to true when done
             enabled: true
-            hosts:
-                - sso.moonpiedumpl.ing
-            annotations:
-                cert-manager.io/issuer: "letsencrypt-staging"
-                acme.cert-manager.io/http01-edit-in-place: "true"
-            tls:
-              - hosts: [sso.moonpiedumpl.ing]
-                secretName: sso-acme
-    postgresql:
-        enabled: true
-        auth:
-            password: "ThisIsNotASecurePassword"
-    redis:
-        enabled: true
-
+            auth:
+                password: ENC[AES256_GCM,data:QZgcD4a+wqktN7c9mmHWicFjTDm8ZDdDx41LdMEBEeABjQ==,iv:63TiPtJYywkIZwldp4PQcU3WzHKAYRGwqo/JtwE3eb8=,tag:sAE1dlWH11LFwH7/Fbk0Iw==,type:str]
+        redis:
+            enabled: true
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1sg3u7ndj045gzv3u4w5t5kntplg6sz2hv6k3uxpxq85vtx56rc4s8q83gr
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNdXVSa0FtTVFNV01iUndk
+            RklNNk02OFVxVVQ3RUZyUnFvTWFaUHpVNlhRCkdSUUpVdnBBU3JiSndZeFpPVlFx
+            OXpLcmhYSjJ1czI4QzFCZFdrcis3QWMKLS0tIFB5ZlQ4TytpNkEyUFJQUWs4VE4w
+            dzkzS0tMbjFzRitKbkpKVFg0a0owOXcKvSBlZmn4pocBHrc5QbUNA5W3p5kiRaYM
+            08eMw2rCn5f6hvB2uEoImiSaKQjThmgWLcCRL4kOB+itrto6b4wC0A==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-11-20T06:54:32Z"
+    mac: ENC[AES256_GCM,data:BsAJJcQe2W0OObtlrJLmZZ1cgExRJ8Qpm/2p2oUXOQAHkK1K6Jc1ZeHTo7sTZaSQVxcMUFkdA/s9eRsTQ8dUcsI/rLLbzQXqlKjmre/ZDhjcNoevr2X4GTacso3koIcCrkdnO1X0mZC1q9C6myv5BQ4KbjCDjCO50FIrrFsoMW0=,iv:roIs3cREdk2tVX/Fatm1AC7JfyrSRORlmYM5muceQP4=,tag:pk+3z0ztaN+cHzd3cCQUMA==,type:str]
+    pgp: []
+    encrypted_regex: ^(secret_key|password)$
+    version: 3.9.1
