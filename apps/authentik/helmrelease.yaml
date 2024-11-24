@@ -37,7 +37,7 @@ spec:
             hosts:
                 - sso.moonpiedumpl.ing
             annotations:
-                cert-manager.io/issuer: "letsencrypt-staging"
+                cert-manager.io/issuer: "letsencrypt-prod"
                 acme.cert-manager.io/http01-edit-in-place: "true"
             tls:
               - hosts: [sso.moonpiedumpl.ing]
