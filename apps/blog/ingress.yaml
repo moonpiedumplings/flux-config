@@ -5,7 +5,7 @@ metadata:
   labels:
     name: blog-ingress
   annotations:
-    cert-manager.io/issuer: "letsencrypt-staging"
+    cert-manager.io/issuer: "letsencrypt-prod"
     acme.cert-manager.io/http01-edit-in-place: "true"
   namespace: default
 spec:
@@ -19,7 +19,7 @@ spec:
           service:
             name: nginx
             port: 
-              number: 8080
+              number: 80
   tls:
   - hosts: 
     - "moonpiedumpl.ing"
