@@ -3,7 +3,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: rabbitmq
-  namespace: openstack-infra
+  namespace: openstack
 spec:
   chart:
     spec:
@@ -11,7 +11,7 @@ spec:
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: authentik
+        name: openstack-infra
   interval: 1m0s
   values:
     images:
