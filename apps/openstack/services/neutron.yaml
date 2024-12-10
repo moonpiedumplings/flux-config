@@ -1,0 +1,82 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: neutron
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: neutron
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack
+  interval: 1m0s
+  values:
+    images:
+      tags:
+        bootstrap: "docker.io/openstackhelm/heat:2024.2-ubuntu_jammy"
+        db_init: "docker.io/openstackhelm/heat:2024.2-ubuntu_jammy"
+        db_drop: "docker.io/openstackhelm/heat:2024.2-ubuntu_jammy"
+        ks_user: "docker.io/openstackhelm/heat:2024.2-ubuntu_jammy"
+        ks_service: "docker.io/openstackhelm/heat:2024.2-ubuntu_jammy"
+        ks_endpoints: "docker.io/openstackhelm/heat:2024.2-ubuntu_jammy"
+        neutron_db_sync: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_dhcp: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_l3: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_l2gw: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_linuxbridge_agent: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_metadata: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_ovn_metadata: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_openvswitch_agent: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_server: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_rpc_server: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_bagpipe_bgp: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+        neutron_netns_cleanup_cron: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
+    network:
+        backend: linuxbridge
+    dependencies:
+      dynamic:
+        targeted:
+          linuxbridge:
+            dhcp:
+              pod:
+                - requireSameNode: true
+                  labels:
+                    application: neutron
+                    component: neutron-lb-agent
+            l3:
+              pod:
+                - requireSameNode: true
+                  labels:
+                    application: neutron
+                    component: neutron-lb-agent
+            metadata:
+              pod:
+                - requireSameNode: true
+                  labels:
+                    application: neutron
+                    component: neutron-lb-agent
+            lb_agent:
+              pod: null
+    conf:
+      neutron:
+        DEFAULT:
+          interface_driver: linuxbridge
+          l3_ha: false
+          max_l3_agents_per_router: 1
+      dhcp_agent:
+        DEFAULT:
+          interface_driver: linuxbridge
+      l3_agent:
+        DEFAULT:
+          interface_driver: linuxbridge
+      plugins:
+        linuxbridge_agent:
+          linux_bridge:
+            physical_interface_mappings: "external:eth1" 
+            bridge_mappings: null
+        ml2_conf:
+          ml2_type_flat:
+            flat_networks: public

@@ -1,0 +1,23 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: horizon
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: horizon
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack
+  interval: 1m0s
+  values:
+    images:
+      tags:
+        db_init: docker.io/openstackhelm/heat:2024.2-ubuntu_jammy
+        db_drop: docker.io/openstackhelm/heat:2024.2-ubuntu_jammy
+        horizon_db_sync: docker.io/openstackhelm/horizon:2024.2-ubuntu_jammy
+        horizon: docker.io/openstackhelm/horizon:2024.2-ubuntu_jammy
+    
