@@ -35,7 +35,8 @@ spec:
         neutron_bagpipe_bgp: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
         neutron_netns_cleanup_cron: "docker.io/openstackhelm/neutron:2024.2-ubuntu_jammy"
     network:
-        backend: linuxbridge
+        backend: 
+          - linuxbridge
     dependencies:
       dynamic:
         targeted:
