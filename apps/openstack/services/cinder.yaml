@@ -13,6 +13,7 @@ spec:
         kind: HelmRepository
         name: openstack
   interval: 1m0s
+  timeout: 10m0s
   values:
     images:
       tags:
