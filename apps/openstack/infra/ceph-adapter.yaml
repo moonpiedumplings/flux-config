@@ -1,0 +1,17 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ceph-adapter-rook
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: ceph-adapter-rook
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-infra
+  interval: 1m0s
+  values:
+    ceph_cluster_namespace: ceph
