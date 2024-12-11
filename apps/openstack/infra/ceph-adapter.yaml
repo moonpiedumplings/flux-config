@@ -13,3 +13,5 @@ spec:
         kind: HelmRepository
         name: openstack-infra
   interval: 1m0s
+  values:
+    ceph_cluster_namespace: openstack
