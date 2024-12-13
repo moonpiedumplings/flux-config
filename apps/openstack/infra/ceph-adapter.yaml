@@ -14,4 +14,4 @@ spec:
         name: openstack-infra
   interval: 1m0s
   values:
-    ceph_cluster_namespace: openstack
+    ceph_cluster_namespace: ceph

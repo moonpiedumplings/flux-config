@@ -2,16 +2,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: rook-ceph-cluster
-  namespace: openstack
+  name: rook-ceph-operator
+  namespace: ceph
 spec:
   chart:
     spec:
-      chart: rook-ceph-cluster
+      chart: rook-ceph
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
         name: rook
   interval: 1m0s
-  values:
-    operatorNamespace: openstack
