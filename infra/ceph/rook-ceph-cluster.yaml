@@ -13,5 +13,3 @@ spec:
         kind: HelmRepository
         name: rook
   interval: 1m0s
-  values:
-    operatorNamespace: openstack

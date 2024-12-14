@@ -13,5 +13,11 @@ spec:
         kind: HelmRepository
         name: openstack-infra
   interval: 1m0s
+  dependsOn: 
+    - name: rook-ceph-operator
+      namespace: ceph
+    - name: rook-ceph-cluster
+      namespace: ceph
   values:
     ceph_cluster_namespace: ceph
+  

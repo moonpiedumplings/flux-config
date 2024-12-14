@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: nginx
-      version: "18.2.4"
+      version: "18.3.1"
   interval: 1m0s
   values:
     cloneStaticSiteFromGit:

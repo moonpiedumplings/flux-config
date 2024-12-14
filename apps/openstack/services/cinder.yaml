@@ -14,6 +14,11 @@ spec:
         name: openstack
   interval: 1m0s
   timeout: 10m0s
+  dependsOn:
+    - name: ceph-adapter-rook
+    - name: mariadb
+    - name: memcached
+    - name: rabbitmq
   values:
     images:
       tags:

@@ -13,6 +13,10 @@ spec:
         kind: HelmRepository
         name: openstack
   interval: 1m0s
+  dependsOn:
+    - name: mariadb
+    - name: memcached
+    - name: rabbitmq
   values:
     images:
       tags:
