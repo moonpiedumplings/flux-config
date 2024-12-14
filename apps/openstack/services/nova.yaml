@@ -17,6 +17,7 @@ spec:
     - name: mariadb
     - name: memcached
     - name: rabbitmq
+    - name: libvirt
     - name: glance
     - name: neutron
     - name: cinder

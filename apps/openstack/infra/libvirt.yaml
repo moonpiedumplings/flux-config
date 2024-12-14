@@ -14,7 +14,7 @@ spec:
         name: openstack-infra
   interval: 1m0s
   dependsOn:
-    - name: ceph-adapter
+    - name: ceph-adapter-rook
   values:
     # It looks like conf.ceph.enabled: true is already the default
     images:
