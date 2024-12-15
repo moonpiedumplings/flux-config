@@ -15,3 +15,15 @@ spec:
   interval: 1m0s
   values:
     operatorNamespace: ceph
+    toolbox:
+      enabled: true
+      tolerations: []
+      affinity: {}
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "64Mi"
+        requests:
+          cpu: "100m"
+          memory: "64Mi"
+      priorityClassName:
