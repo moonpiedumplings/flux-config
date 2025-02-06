@@ -15,9 +15,9 @@ spec:
   interval: 1m0s
   dependsOn: 
     - name: rook-ceph-operator
-      namespace: ceph
+      namespace: rook-ceph
     - name: rook-ceph-cluster
-      namespace: ceph
+      namespace: rook-ceph
   values:
-    ceph_cluster_namespace: ceph
+    ceph_cluster_namespace: rook-ceph
   
