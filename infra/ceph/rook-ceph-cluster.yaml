@@ -15,7 +15,7 @@ spec:
         name: rook
   interval: 1m0s
   values:
-    operatorNamespace: ceph
+    operatorNamespace: rook-ceph
     toolbox:
       enabled: true
     clusterName: ceph
