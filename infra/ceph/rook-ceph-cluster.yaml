@@ -19,3 +19,9 @@ spec:
     toolbox:
       enabled: true
     clusterName: ceph
+    cephClusterSpec:
+        Mgr:
+          Count: 1
+        Mon:
+          Count: 1
+
