@@ -20,8 +20,8 @@ spec:
       enabled: true
     clusterName: ceph
     cephClusterSpec:
-        Mgr:
-          Count: 1
-        Mon:
-          Count: 1
+      Mgr:
+        Count: 1
+      Mon:
+        Count: 1
 
