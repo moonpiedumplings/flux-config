@@ -16,46 +16,69 @@ spec:
   interval: 1m0s
   values:
     operatorNamespace: rook-ceph
-    toolbox:
-      enabled: true
+    # toolbox:
+    #   enabled: true 
     clusterName: ceph
     cephClusterSpec:
       dataDirHostPath: /var/lib/rook
-      Mgr:
-        Count: 1
-      Mon:
-        Count: 1
+      mgr:
+        count: 1
+        allowMultiplePerNode: true
+        modules: 
+          - name: rook
+            enabled: true
+      mon:
+        count: 1
+      monitoring:
+        enabled: false
+      priorityClassNames:
+        all: system-node-critical
+        mgr: system-cluster-critical
+      disruptionManagement:
+        managePodBudgets: true
+      cephConfig:
+        global:
+          osd_pool_default_size: "1"
+          mon_warn_on_pool_no_redundancy: "false"
+          bdev_flock_retry: "20"
+          bluefs_buffered_io: "false"
+          mon_data_avail_warn: "10"
       storage:
-    storageClassDeviceSets:
-    - name: set1
-      count: 1
-      portable: false
-      resources:
-        limits:
-          memory: "4Gi"
-        requests:
-          cpu: "500m"
-          memory: "4Gi"
-      placement:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: "rook.io/cluster"
-                  operator: In
-                  values:
-                    - cluster1
-              topologyKey: "topology.kubernetes.io/zone"
-      volumeClaimTemplates:
-      - metadata:
-          name: data
-        spec:
+        useAllNodes: true
+        useAllDevices: true
+        allowDeviceClassUpdate: true
+        allowOsdCrushWeightUpdate: false
+        storageClassDeviceSets:
+        - name: set1
+          count: 1
+          portable: false
           resources:
+            limits:
+              memory: "4Gi"
             requests:
-              storage: 10Gi
-          storageClassName: openebs-persistent-hostpath
-          volumeMode: Block
-          accessModes:
-            - ReadWriteOnce
+              cpu: "500m"
+              memory: "4Gi"
+          placement:
+            podAntiAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchExpressions:
+                    - key: "rook.io/cluster"
+                      operator: In
+                      values:
+                        - cluster1
+                  topologyKey: "topology.kubernetes.io/zone"
+          volumeClaimTemplates:
+          - metadata:
+              name: data
+            spec:
+              resources:
+                requests:
+                  storage: 10Gi
+              storageClassName: openebs-persistent-hostpath
+              volumeMode: Block
+              accessModes:
+                - ReadWriteOnce
+    
