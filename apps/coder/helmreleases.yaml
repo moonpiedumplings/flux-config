@@ -1,0 +1,69 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: coder-pg
+  namespace: coder
+spec:
+  chart:
+    spec:
+      chart: postgresql
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+  interval: 1m0s
+  valuesFrom:
+    - kind: Secret
+      name: coder-pg-secrets
+      valuesKey: values.yaml
+  values:
+    persistence:
+      size: 10Gi
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: coder
+  namespace: coder
+spec:
+  chart:
+    spec:
+      chart: coder
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: coder
+      version: "2.20.0"
+  dependsOn:
+    - name: coder-pg
+  interval: 10m0s
+  valuesFrom:
+    - kind: Secret
+      name: coder-secrets
+      valuesKey: values.yaml
+  values:
+    coder: 
+      env: 
+        - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
+          value: "false"
+        - name: CODER_OIDC_ISSUER_URL
+          value: "https://sso.moonpiedumpl.ing/application/o/coder/.well-known/openid-configuration"
+        - name: CODER_OIDC_IGNORE_EMAIL_VERIFIED
+          value: "true"
+        - name: CODER_OIDC_CLIENT_ID
+          value: "sJ1kfuBz91QSDMqvMRZXi6ogiV8R8oImwg6lTigh"
+        - name: CODER_ACCESS_URL
+          value: "coder.moonpiedumpl.ing"
+        # Appealing, but I would like the "owner" user for admin purposes
+        # - name: CODER_DISABLE_PASSWORD_AUTH
+        #  value: "true"
+      ingress:
+        enable: true
+        host: "coder.moonpiedumpl.ing"
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          acme.cert-manager.io/http01-edit-in-place: "true"
+        tls:
+          enable: true
+          secretName: "coder-ssl"
