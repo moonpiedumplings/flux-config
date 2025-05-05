@@ -6,7 +6,7 @@ metadata:
   namespace: coder
 spec:
   interval: 10m0s
-  url: https://charts.bitnami.com/bitnami
+  url: oci://docker.io/bitnamicharts
   type: oci
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
