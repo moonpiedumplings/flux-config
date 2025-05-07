@@ -54,7 +54,7 @@ spec:
         - name: CODER_OIDC_CLIENT_ID
           value: "sJ1kfuBz91QSDMqvMRZXi6ogiV8R8oImwg6lTigh"
         - name: CODER_ACCESS_URL
-          value: "coder.moonpiedumpl.ing"
+          value: "https://coder.moonpiedumpl.ing"
         # Appealing, but I would like the "owner" user for admin purposes
         # - name: CODER_DISABLE_PASSWORD_AUTH
         #  value: "true"
