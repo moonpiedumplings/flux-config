@@ -48,7 +48,7 @@ spec:
         - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
           value: "false"
         - name: CODER_OIDC_ISSUER_URL
-          value: "https://sso.moonpiedumpl.ing/application/o/coder"
+          value: "https://sso.moonpiedumpl.ing/application/o/coder/"
         - name: CODER_OIDC_IGNORE_EMAIL_VERIFIED
           value: "true"
         - name: CODER_OIDC_CLIENT_ID
