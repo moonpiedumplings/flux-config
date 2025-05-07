@@ -59,7 +59,7 @@ spec:
         # - name: CODER_DISABLE_PASSWORD_AUTH
         #  value: "true"
       service:
-        enable: false
+        enable: true
       ingress:
         enable: true
         host: "coder.moonpiedumpl.ing"
