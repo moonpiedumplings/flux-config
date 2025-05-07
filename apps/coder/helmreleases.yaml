@@ -58,6 +58,8 @@ spec:
         # Appealing, but I would like the "owner" user for admin purposes
         # - name: CODER_DISABLE_PASSWORD_AUTH
         #  value: "true"
+      loadbalancer:
+        enable: false
       ingress:
         enable: true
         host: "coder.moonpiedumpl.ing"

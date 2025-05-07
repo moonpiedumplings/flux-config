@@ -1,0 +1,17 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openfga
+  namespace: openfga
+spec:
+  chart:
+    spec:
+      chart: openfga
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openfga
+  interval: 1m0s
+  values:
+    replicaCount: 1
