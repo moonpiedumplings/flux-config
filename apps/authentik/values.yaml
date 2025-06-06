@@ -22,6 +22,8 @@ data:
                 - authentik.domain.tld
     postgresql:
         enabled: true
+        image:
+            tag: 15.4.0-debian-11-r45
         auth:
             password: "ThisIsNotASecurePassword"
     redis:
