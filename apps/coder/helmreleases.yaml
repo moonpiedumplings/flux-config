@@ -34,7 +34,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: coder
-      #version: "2.20.0"
+      version: "<=2.24"
   dependsOn:
     - name: coder-pg
   interval: 10m0s
