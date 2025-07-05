@@ -38,12 +38,8 @@ spec:
   dependsOn:
     - name: coder-pg
   interval: 10m0s
-  valuesFrom:
-    - kind: Secret
-      name: coder-secrets
-      valuesKey: values.yaml
   values:
-    coder: 
+    coder:
       env: 
         - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
           value: "false"
@@ -58,6 +54,11 @@ spec:
         # Appealing, but I would like the "owner" user for admin purposes
         # - name: CODER_DISABLE_PASSWORD_AUTH
         #  value: "true"
+        - name: CODER_OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: coder-secret
+              key: CODER_OIDC_CLIENT_SECRET
       service:
         enable: true
       ingress:
