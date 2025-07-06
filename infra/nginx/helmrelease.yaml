@@ -19,10 +19,10 @@ spec:
       admissionWebhooks:
         enabled: false
       service:
-        enabled: true
+        enabled: false
         # type: LoadBalancer
-        externalTrafficPolicy: Local
-      # hostPort:
-      #   enabled: true
+        # externalTrafficPolicy: Local
+      hostPort:
+        enabled: true
       ingressClassResource:
         default: true
