@@ -22,7 +22,9 @@ spec:
         enabled: false
         # type: LoadBalancer
         # externalTrafficPolicy: Local
-      hostPort:
+      # hostPort:
+      #   enabled: true
+      hostNetwork:
         enabled: true
       ingressClassResource:
         default: true
