@@ -19,6 +19,9 @@ spec:
       admissionWebhooks:
         enabled: false
       service:
-        type: NodePort
+        enabled: false
+        # type: LoadBalancer
+      hostPort:
+        enabled: true
       ingressClassResource:
         default: true
