@@ -15,11 +15,16 @@ spec:
       version: "18.3.1"
   postRenderers:
     - kustomize:
-        patchesStrategicMerge:
-          - kind: service
-            metadata:
-              name: blog-nginx
-            $patch: delete
+        patches:
+          - target:
+              kind: Service
+              name: blog-nginx 
+            patch: |-
+              $patch: delete
+              apiversion: v1
+              kind: Service
+              metadata:
+                name: not-used
   interval: 1m0s
   values:
     cloneStaticSiteFromGit:
