@@ -79,3 +79,4 @@ spec:
         tls:
           enable: true
           secretName: "coder-ssl"
+          wildcardSecretName: "coder-wildcard-ssl"
