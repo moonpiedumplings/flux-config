@@ -20,11 +20,13 @@ spec:
         enabled: false
       service:
         enabled: false
-        # type: LoadBalancer
-        # externalTrafficPolicy: Local
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+      # Tried these as an alternative to externaltrafficpolicy, but
+      # they wouldn't proxy correctly, everything was sent to the service that was running on the main domain
       # hostPort:
       #   enabled: true
-      hostNetwork:
-        enabled: true
+      # hostNetwork:
+      #   enabled: true
       ingressClassResource:
         default: true
