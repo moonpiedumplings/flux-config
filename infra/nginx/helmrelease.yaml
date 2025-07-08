@@ -18,8 +18,8 @@ spec:
     controller:
       admissionWebhooks:
         enabled: false
-      # service:
-      #   enabled: true
+      service:
+        enabled: false
       #   type: LoadBalancer
       #   externalTrafficPolicy: Local
       # Tried these as an alternative to externaltrafficpolicy, but
