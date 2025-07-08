@@ -21,7 +21,7 @@ spec:
       service:
         enabled: false
         type: LoadBalancer
-        externalTrafficPolicy: Local
+        externalTrafficPolicy: Cluster
       # Tried these as an alternative to externaltrafficpolicy, but
       # they wouldn't proxy correctly, everything was sent to the service that was running on the main domain
       # hostPort:
