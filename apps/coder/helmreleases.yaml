@@ -72,6 +72,7 @@ spec:
       ingress:
         enable: true
         host: "coder.moonpiedumpl.ing"
+        wildcardHost: "*.coder.moonpiedumpl.ing"
         annotations:
           cert-manager.io/cluster-issuer: "letsencrypt-prod"
           acme.cert-manager.io/http01-edit-in-place: "true"
