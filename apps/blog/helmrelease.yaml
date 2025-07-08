@@ -13,6 +13,13 @@ spec:
         kind: HelmRepository
         name: nginx
       version: "18.3.1"
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: service
+            metadata:
+              name: blog-nginx
+            $patch: delete
   interval: 1m0s
   values:
     cloneStaticSiteFromGit:
@@ -21,6 +28,10 @@ spec:
       branch: gh-pages
       # 60 seconds is the default
       interval: 60
+    # service:
+    #   ports:
+    #     http: 19080
+    #     https: 19443
     # ingress:
     #   enabled: true
     #   hostname: moonpiedumpl.ing

@@ -18,14 +18,14 @@ spec:
     controller:
       admissionWebhooks:
         enabled: false
-      service:
-        enabled: true
-        type: LoadBalancer
-        externalTrafficPolicy: Local
+      # service:
+      #   enabled: true
+      #   type: LoadBalancer
+      #   externalTrafficPolicy: Local
       # Tried these as an alternative to externaltrafficpolicy, but
       # they wouldn't proxy correctly, everything was sent to the service that was running on the main domain
-      # hostPort:
-      #   enabled: true
+      hostPort:
+        enabled: true
       # hostNetwork:
       #   enabled: true
       ingressClassResource:
