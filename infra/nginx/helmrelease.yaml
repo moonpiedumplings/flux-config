@@ -19,9 +19,9 @@ spec:
       admissionWebhooks:
         enabled: false
       service:
-        enabled: false
+        enabled: true
         type: LoadBalancer
-        externalTrafficPolicy: Cluster
+        externalTrafficPolicy: Local
       # Tried these as an alternative to externaltrafficpolicy, but
       # they wouldn't proxy correctly, everything was sent to the service that was running on the main domain
       # hostPort:
