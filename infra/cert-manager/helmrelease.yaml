@@ -24,14 +24,15 @@ metadata:
   name: porkbun-webhook
   namespace: cert-manager
 spec:
+  releaseName: porkbun-webhook
   chart:
     spec:
-      chart: porkbun-webhook
+      chart: cert-manager-porkbun-webhook
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
         name: porkbun-webhook
-      #version: v1.16.0
+      version: 1.0.3
   interval: 1m0s
   values:
     groupName: moonpiedumpl.ing
