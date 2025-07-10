@@ -16,5 +16,5 @@ metadata:
 spec:
   type: oci
   interval: 5m0s
-  url: oci://ghcr.io/lost-woods/charts/cert-manager-porkbun-webhook
+  url: oci://ghcr.io/lost-woods/charts/cert-manager-porkbun-webhook:1.0.3
 
