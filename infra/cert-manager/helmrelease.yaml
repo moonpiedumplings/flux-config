@@ -17,3 +17,21 @@ spec:
   values:
     crds:
       enabled: true
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: porkbun-webhook
+  namespace: cert-manager
+spec:
+  chart:
+    spec:
+      chart: porkbun-webhook
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: porkbun-webhook
+      #version: v1.16.0
+  interval: 1m0s
+  values:
+    groupName: moonpiedumpl.ing

@@ -7,3 +7,14 @@ metadata:
 spec:
   interval: 1m0s
   url: https://charts.jetstack.io
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: porkbun-webook
+  namespace: cert-manager
+spec:
+  type: oci
+  interval: 5m0s
+  url: oci://ghcr.io/lost-woods/charts/cert-manager-porkbun-webhook
+

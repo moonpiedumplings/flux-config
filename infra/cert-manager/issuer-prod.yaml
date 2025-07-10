@@ -13,7 +13,19 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-prod
     # Enable the HTTP-01 challenge provider
+    # solvers:
+    #   - http01:
+    #       ingress: {}
+
+    # Use the DNS01 solver instead
+    # only the DNS01 solver works for wildcard certs
     solvers:
-      - http01:
-          ingress: {}
+      - dns01:
+          webhook:
+            groupName: moonpiedumpl.ing
+            solverName: porkbun
+            config:
+              secretNameRef: porkbun-secrets
+              apiKeySecretRef: api-key
+              secretKeySecretRef: secret-key
             
