@@ -25,7 +25,7 @@ spec:
             groupName: moonpiedumpl.ing
             solverName: porkbun
             config:
-              secretNameRef: porkbun-secrets
+              secretNameRef: porkbun-secret
               apiKeySecretRef: api-key
               secretKeySecretRef: secret-key
             
