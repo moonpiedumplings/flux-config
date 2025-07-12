@@ -9,12 +9,13 @@ spec:
   url: https://charts.jetstack.io
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+kind: GitRepository
 metadata:
   name: porkbun-webhook
   namespace: cert-manager
 spec:
-  type: oci
   interval: 5m0s
-  url: oci://ghcr.io/lost-woods/charts/
+  url: https://github.com/mdonoughe/porkbun-webhook
+  ref:
+    branch: main
 

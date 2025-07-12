@@ -20,12 +20,20 @@ spec:
     # Use the DNS01 solver instead
     # only the DNS01 solver works for wildcard certs
     solvers:
-      - dns01:
+      - selector:
+          dnsZones:
+            - moonpiedumpl.ing
+        dns01:
           webhook:
             groupName: moonpiedumpl.ing
             solverName: porkbun
             config:
-              secretNameRef: porkbun-secret
-              apiKeySecretRef: api-key
-              secretKeySecretRef: secret-key
+              apiKeySecretRef:
+                name: porkbun-secret
+                key: api-key
+              secretKeySecretRef:
+                name: porkbun-secret
+                key: secret-key
+
+
             

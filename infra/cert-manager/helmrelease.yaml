@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: cert-manager
-      version: v1.16.0
+      version: "<=1.18"
   interval: 1m0s
   values:
     crds:
@@ -27,12 +27,14 @@ spec:
   releaseName: porkbun-webhook
   chart:
     spec:
-      chart: cert-manager-porkbun-webhook
+      chart: ./deploy/porkbun-webhook
       reconcileStrategy: ChartVersion
       sourceRef:
-        kind: HelmRepository
+        kind: GitRepository
         name: porkbun-webhook
-      version: 1.0.3
+        namespace: cert-manager
   interval: 1m0s
   values:
     groupName: moonpiedumpl.ing
+
+    
