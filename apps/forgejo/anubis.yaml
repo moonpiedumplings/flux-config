@@ -6,13 +6,9 @@ metadata:
 spec:
   selector:
     matchLabels:
-      apps: anubis-forgejo
+      app: anubis-forgejo
   template:
     spec:
-      # volumes:
-      #   - name: anubis
-      #     configMap:
-      #       name: anubis-cfg
       containers:
         - name: anubis
           image: ghcr.io/techarohq/anubis:main
