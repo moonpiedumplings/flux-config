@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anubis-forgejo
+spec:
+  selector:
+    matchLabels:
+      apps: anubis-forgejo
+  template:
+    spec:
+      # volumes:
+      #   - name: anubis
+      #     configMap:
+      #       name: anubis-cfg
+      containers:
+        - name: anubis
+          image: ghcr.io/techarohq/anubis:main
+          imagePullPolicy: Always
+          env:
+            - name: "BIND"
+              value: ":80"
+            - name: "DIFFICULTY"
+              value: "4"
+            - name: "METRICS_BIND"
+              value: ":9090"
+            - name: "OG_PASSTHROUGH"
+              value: "true"
+            - name: "POLICY_FNAME"
+              value: "/xe/cfg/anubis/botPolicies.yaml"
+            - name: "SERVE_ROBOTS_TXT"
+              value: "false"
+            - name: "TARGET"
+              # forgejo service here
+              value: "http://foregejo.forgejo.svc.cluster.local:3000"
+            # - name: "SLOG_LEVEL"
+            #   value: "debug"
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 250m
+              memory: 128Mi
+          securityContext:
+            runAsUser: 912
+            runAsGroup: 912
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: anubis-forgejo
+spec:
+  type: ClusterIP
+  selector:
+    app: anubis
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: forgejo
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  labels:
+    app.kubernetes.io/name: forgejo
+spec:
+  rules:
+  - host: forgejo.moonpiedumpl.ing
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: anubis-forgejo
+            port: 
+              number: 80

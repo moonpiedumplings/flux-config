@@ -1,0 +1,113 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo
+  namespace: forgejo
+spec:
+  chart:
+    spec:
+      chart: forgejo
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: forgejo
+  interval: 1m0s
+  values:
+    postgresql-ha:
+      enabled: false
+    postgresql:
+      enabled: true
+      global:
+        postgresql:
+          auth:
+            # see https://artifacthub.io/packages/helm/bitnami/postgresql
+            database: forgejo
+            username: forgejo
+            existingSecret: forgejo-postgres-bitnami-secret
+        primary:
+          persistence:
+            enabled: true
+    redis-cluster:
+      enabled: false
+    redis:
+      enabled: true
+      global:
+        redis:
+          # see https://github.com/bitnami/charts/blob/f14d986d3713716a9b263075ac784ef749438a04/bitnami/redis/values.yaml#L143-L157
+          existingSecret: forgejo-redis-bitnami-secret
+      primary:
+        persistence:
+          enabled: true
+        
+    persistence:
+      enabled: true
+    service:
+      ssh:
+        hostPort: 22
+      http:
+        type: ClusterIP
+    gitea:
+      # Either specify inline `key` and `secret` or refer to them via `existingSecret`
+      admin:
+        existingSecret: forgejo-admin-secret
+      ## @param gitea.oauth OAuth configuration
+      oauth:
+        - name: 'Authentik'
+          provider: forgejo
+          existingSecret: forgejo-ouath-secret
+          autoDiscoverUrl: "https://sso.moonpiedumpl.ing/application/o/forgejo/.well-known/openid-configuration"
+          adminGroup: admin
+          iconUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/png/authentik.png
+          
+
+      ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
+      additionalConfigSources: []
+      #   - secret:
+      #       secretName: gitea-app-ini-oauth
+      config:
+        repository:
+          PREFERRED_LICENSES: AGPL-3.0-or-later
+          DEFAULT_PRIVATE: public
+          # GO_GET_CLONE_URL_PROTOCOL: ssh            
+        service:
+          # REQUIRE_SIGNIN_VIEW: true
+          DISABLE_REGISTRATION: true
+          # Disable to force login via OIDC
+          # ENABLE_INTERNAL_SIGNIN: false
+          ALLOW_ONLY_EXTERNAL_REGISTRATION: TRUE
+        # So apparently, oauth, openid, and ouath2_client are 3 seperate things
+        # What is the difference between oauth and openid?
+          DEFAULT_KEEP_EMAIL_PRIVATE: true
+        ouath:
+          ENABLED: true
+        openid:
+          ENABLE_OPENID_SIGNIN: false
+          ENABLE_OPENID_SIGNUP: false
+        oauth2_client:
+          REGISTER_EMAIL_CONFIRM: false
+          ENABLE_AUTO_REGISTRATION: true
+          UPDATE_AVATAR: true
+          ACCOUNT_LINKING: auto
+          USERNAME: nickname
+          OPENID_CONNECT_SCOPES: "openid email groups"
+        indexer:
+          ISSUE_INDEXER_TYPE: bleve
+          REPO_INDEXER_ENABLED: true
+          REPO_INDEXER_TYPE: bleve
+          REPO_INDEXER_REPO_TYPES: "sources,forks,mirrors,templates"
+        admin:
+          EXTERNAL_USER_DISABLE_FEATURES: "deletion"
+        database:
+          DB_TYPE: postgres
+          HOST: forgejo-postgres.forgejo.svc.cluster.local:5432
+          USER: forgejo
+          NAME: forgejo
+          SSL_MODE: disable
+          existingSecret: forgejo-postgres-forgejo-secret
+        cache:
+          ADAPTER: redis
+          existingSecret: forgejo-redis-foregjo-secret
+          
+
+    
