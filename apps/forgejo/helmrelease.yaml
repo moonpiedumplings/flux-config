@@ -55,7 +55,7 @@ spec:
       oauth:
         - name: 'Authentik'
           provider: forgejo
-          existingSecret: forgejo-ouath-secret
+          existingSecret: forgejo-oauth-secret
           autoDiscoverUrl: "https://sso.moonpiedumpl.ing/application/o/forgejo/.well-known/openid-configuration"
           adminGroup: admin
           iconUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/png/authentik.png
@@ -100,7 +100,7 @@ spec:
           EXTERNAL_USER_DISABLE_FEATURES: "deletion"
         database:
           DB_TYPE: postgres
-          HOST: forgejo-postgres.forgejo.svc.cluster.local:5432
+          HOST: forgejo-postgresql.forgejo.svc.cluster.local:5432
           USER: forgejo
           NAME: forgejo
           SSL_MODE: disable

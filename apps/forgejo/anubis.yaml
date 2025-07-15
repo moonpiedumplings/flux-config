@@ -25,8 +25,6 @@ spec:
               value: ":9090"
             - name: "OG_PASSTHROUGH"
               value: "true"
-            - name: "POLICY_FNAME"
-              value: "/xe/cfg/anubis/botPolicies.yaml"
             - name: "SERVE_ROBOTS_TXT"
               value: "false"
             - name: "TARGET"
@@ -60,7 +58,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: anubis
+    app: anubis-forgejo
   ports:
   - port: 80
     targetPort: 80
@@ -87,3 +85,7 @@ spec:
             name: anubis-forgejo
             port: 
               number: 80
+  tls:
+  - hosts:
+    - forgejo.moonpiedumpl.ing
+    secretName: forgejo-ssl
