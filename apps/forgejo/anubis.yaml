@@ -8,6 +8,9 @@ spec:
     matchLabels:
       app: anubis-forgejo
   template:
+    metadata:
+      labels:
+        app: anubis-forgejo
     spec:
       containers:
         - name: anubis
