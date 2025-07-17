@@ -62,9 +62,9 @@ spec:
           
 
       ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
-      additionalConfigSources: []
-      #   - secret:
-      #       secretName: gitea-app-ini-oauth
+      additionalConfigSources:
+        - secret:
+            secretName: forgejo-db-secret
       config:
         repository:
           PREFERRED_LICENSES: AGPL-3.0-or-later
@@ -105,8 +105,12 @@ spec:
           NAME: forgejo
           SSL_MODE: disable
           existingSecret: forgejo-postgres-forgejo-secret
+          # In the secret
+          # PASSWD: password
         cache:
           ADAPTER: redis
+          # In the secret
+          # host: redis://:password@forgejo-redis-master.forgejo.svc.cluster.local:6379?pool_size=100&idle_timeout=180s
           existingSecret: forgejo-redis-foregjo-secret
           
 
