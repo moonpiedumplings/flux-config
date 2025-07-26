@@ -28,14 +28,14 @@ spec:
         primary:
           persistence:
             enabled: true
-    redis-cluster:
+    valkey-cluster:
       enabled: false
-    redis:
+    valkey:
       enabled: true
-      global:
-        redis:
-          # see https://github.com/bitnami/charts/blob/f14d986d3713716a9b263075ac784ef749438a04/bitnami/redis/values.yaml#L143-L157
-          existingSecret: forgejo-redis-bitnami-secret
+      auth:
+        # see https://github.com/bitnami/charts/blob/main/bitnami/valkey/values.yaml
+        existingSecret: forgejo-valkey-bitnami-secret
+        existingSecretPasswordKey: password
       primary:
         persistence:
           enabled: true
@@ -43,8 +43,8 @@ spec:
     persistence:
       enabled: true
     service:
-      ssh:
-        hostPort: 22
+      # ssh:
+      #   hostPort: 22
       http:
         type: ClusterIP
     gitea:
@@ -54,25 +54,27 @@ spec:
       ## @param gitea.oauth OAuth configuration
       oauth:
         - name: 'Authentik'
-          provider: forgejo
+          provider: openidConnect
           existingSecret: forgejo-oauth-secret
           autoDiscoverUrl: "https://sso.moonpiedumpl.ing/application/o/forgejo/.well-known/openid-configuration"
           adminGroup: admin
           iconUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/png/authentik.png
-          
-
-      ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
-      additionalConfigSources:
-        - secret:
-            secretName: forgejo-db-secret
+          # Not documented at all
+          # I am just guessing from: https://github.com/DennisRasey/forgejo/blob/0c7612bca430896d240a51ed231cb2922d579114/cmd/admin_auth_oauth_test.go#L56
+          group-team-map: '{"layer8": {"csun": ["layer8"]}}'
+          group-team-map-removal: true
+          group-claim-name: "groups"
+          admin-group: admin
       config:
+        server:
+          ROOT_URL: "https://forgejo.moonpiedumpl.ing"
         repository:
           PREFERRED_LICENSES: AGPL-3.0-or-later
           DEFAULT_PRIVATE: public
           # GO_GET_CLONE_URL_PROTOCOL: ssh            
         service:
           # REQUIRE_SIGNIN_VIEW: true
-          DISABLE_REGISTRATION: true
+          DISABLE_REGISTRATION: false
           # Disable to force login via OIDC
           # ENABLE_INTERNAL_SIGNIN: false
           ALLOW_ONLY_EXTERNAL_REGISTRATION: TRUE
@@ -104,14 +106,40 @@ spec:
           USER: forgejo
           NAME: forgejo
           SSL_MODE: disable
-          existingSecret: forgejo-postgres-forgejo-secret
           # In the secret
           # PASSWD: password
         cache:
           ADAPTER: redis
           # In the secret
-          # host: redis://:password@forgejo-redis-master.forgejo.svc.cluster.local:6379?pool_size=100&idle_timeout=180s
-          existingSecret: forgejo-redis-foregjo-secret
-          
+          # HOST: redis://:password@forgejo-valkey-primary.forgejo.svc.cluster.local:6379?pool_size=100&idle_timeout=180s
+        queue:
+          TYPE: redis
+          # In the secret, same as redis host above
+          # CONN_STR: 
+        session:
+          PROVIDER: redis
+          # In the secret
+          # PROVIDER_CONFIG: 
+      additionalConfigFromEnvs:
+        - name: FORGEJO__DATABASE__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-db-secret
+              key: databasePassword
+        - name: FORGEJO__CACHE__HOST
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-db-secret
+              key: cacheHost
+        - name: FORGEJO__QUEUE__CONN_STR
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-db-secret
+              key: cacheHost
+        - name: FORGEJO__SESSION__PROVIDER_CONFIG
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-db-secret
+              key: cacheHost
 
     

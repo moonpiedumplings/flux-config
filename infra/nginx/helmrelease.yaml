@@ -13,9 +13,28 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
       # version: 
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              - op:  add
+                path: /spec/template/spec/containers/0/ports/-
+                value:
+                  containerPort: 22
+                  hostPort: 22
+                  name: ssh
+                  protocol: TCP
+            target:
+              kind: Deployment
+              name: ingress-nginx-controller
   interval: 1m0s
   values:
     controller:
+      updateStategy:
+        type: rollingUpdate
+        rollingUpdate:
+          maxSurge: 100%
+          maxUnavailable: 100%
       admissionWebhooks:
         enabled: false
       service:

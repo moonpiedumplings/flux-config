@@ -29,7 +29,7 @@ spec:
               value: "false"
             - name: "TARGET"
               # forgejo service here
-              value: "http://foregejo.forgejo.svc.cluster.local:3000"
+              value: "http://forgejo-http.forgejo.svc.cluster.local:3000"
             # - name: "SLOG_LEVEL"
             #   value: "debug"
           resources:

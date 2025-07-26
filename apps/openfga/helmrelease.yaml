@@ -13,6 +13,8 @@ spec:
         kind: HelmRepository
         name: openfga
   interval: 1m0s
+  install:
+    disableWait: true
   valuesFrom:
     - kind: Secret
       name: openfga-secrets
@@ -35,12 +37,19 @@ spec:
     replicaCount: 1
     datastore:
       engine: postgres
-    postgresql: 
+    postgresql:
       enabled: true
       auth:
         database: postgres
+        # In the secret
+        # postgresPassword: secretpasswrod
+    # In the secret
+    # datastore:
+    #   uri: "postgres://postgres:password@openfga-postgresql.openfga.svc.cluster.local:5432/postgres?sslmode=disable"
     authn:
       method: preshared
+      # In the secret
+      # preshared:
+      #   keys: ["secretkey"]
     playground:
       enabled: false
-
