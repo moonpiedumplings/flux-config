@@ -1,0 +1,52 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openwebui
+  namespace: owui
+spec:
+  chart:
+    spec:
+      chart: open-webui
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openwebui
+      #version: "<=2.24"
+  interval: 10m0s
+  values:
+    extraEnvVars:
+      - name: ENABLE_OAUTH_SIGNUP
+        value: "TRUE"
+      # Enable to let users who are not part of any group sign in
+      # - name: DEFAULT_USER_ROLE
+      #   value: "user"
+    ollama:
+      enabled: true
+      persistentVolume:
+        enabled: true
+        #existingClaim: ollama-pvc
+      gpu:
+        enabled: true
+        type: 'nvidia'
+        number: 1
+      runtimeClassName: nvidia
+    sso:
+      enabled: true
+      enableSignUp: true
+      enableGroupManagement: true
+      groupManagement:
+        groupsClaim: groups
+      enableRoleManagement: true
+      roleManagement:
+        rolesClaim: groups
+        adminRoles: "admins"
+        allowedRoles: "layer8,admins,tester"
+      oidc:
+        enabled: true
+        clientId: oLFN3rOToiqlebjjoE0hWWQCK3FUJx4BNsAZVkfF
+        clientExistingSecret: owui-secrets
+        clientExistingSecretKey: ssoClientSecret
+        providerName: "Authentik"
+        providerUrl: "https://sso.moonpiedumpl.ing/application/o/chat/.well-known/openid-configuration"
+        scopes: "openid profile email"

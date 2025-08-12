@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: owui-ingress
+  labels:
+    name: owui-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  namespace: owui
+spec:
+  rules:
+  - host: chat.moonpiedumpl.ing
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: open-webui
+            port: 
+              number: 80
+  tls:
+  - hosts: 
+    - "chat.moonpiedumpl.ing"
+    secretName: owui-tls

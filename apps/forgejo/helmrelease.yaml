@@ -58,7 +58,6 @@ spec:
           provider: openidConnect
           existingSecret: forgejo-oauth-secret
           autoDiscoverUrl: "https://sso.moonpiedumpl.ing/application/o/forgejo/.well-known/openid-configuration"
-          adminGroup: admin
           iconUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/png/authentik.png
           # Not documented at all
           # I am just guessing from: https://github.com/DennisRasey/forgejo/blob/0c7612bca430896d240a51ed231cb2922d579114/cmd/admin_auth_oauth_test.go#L56
@@ -79,10 +78,12 @@ spec:
         service:
           # Disable to force login via OIDC.
           ENABLE_INTERNAL_SIGNIN: false
-          ALLOW_ONLY_EXTERNAL_REGISTRATION: TRUE
-        # So apparently, oauth, openid, and ouath2_client are 3 seperate things
-        # What is the difference between oauth and openid?
+          ALLOW_ONLY_EXTERNAL_REGISTRATION: true
           DEFAULT_KEEP_EMAIL_PRIVATE: true
+        # So apparently, oauth, openid, and ouath2_client are 3 seperate things
+        # oauth: Oauth provider, for authenticating other apps to forgejo, like a git client
+        # openid: For a shared identity system, simialar to federation, that lets anybody with an openid server sign in with that
+        # oauth2_client: Client that utilizes explicit providers to sign in. Also, is capable of group mapping or making users admins
         ouath:
           ENABLED: true
         openid:
