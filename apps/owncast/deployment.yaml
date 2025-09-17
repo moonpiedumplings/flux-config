@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: owncast
+spec:
+  selector:
+    matchLabels:
+      app: owncast
+  template:
+    metadata:
+      labels:
+        app: owncast
+    spec:
+      containers:
+      - name: owncast
+        image: mirror.gcr.io/owncast/owncast:latest
+        resources:
+          # limits:
+          #   memory: "128Mi"
+          #   cpu: "500m"
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+      hostNetwork: true

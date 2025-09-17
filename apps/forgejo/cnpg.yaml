@@ -1,0 +1,29 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: forgejo-postgres  
+  namespace: forgejo
+spec:
+  instances: 1
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+      storageClassName: longhorn-databases
+      volumeMode: Filesystem
+  backup:
+    volumeSnapshot:
+       className: longhorn-snapshot
+  bootstrap:
+    initdb:
+      database: forgejo
+      owner: forgejo
+      secret:
+        name: forgejo-db-secret
+  managed:
+    services:
+      disabledDefaultServices: ["ro", "r"] 
+

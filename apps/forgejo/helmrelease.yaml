@@ -8,6 +8,9 @@ spec:
   chart:
     spec:
       chart: forgejo
+      # Last version with working bitnami charts
+      #version: 13.0.1
+      version: "14.0.0"
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
@@ -31,7 +34,7 @@ spec:
     valkey-cluster:
       enabled: false
     valkey:
-      enabled: true
+      enabled: false
       auth:
         # see https://github.com/bitnami/charts/blob/main/bitnami/valkey/values.yaml
         existingSecret: forgejo-valkey-bitnami-secret
@@ -104,22 +107,22 @@ spec:
           EXTERNAL_USER_DISABLE_FEATURES: "deletion"
         database:
           DB_TYPE: postgres
-          HOST: forgejo-postgresql.forgejo.svc.cluster.local:5432
+          HOST: forgejo-postgres-rw.forgejo.svc.cluster.local:5432
           USER: forgejo
           NAME: forgejo
           SSL_MODE: disable
           # In the secret
           # PASSWD: password
         cache:
-          ADAPTER: redis
+          ADAPTER: memory
           # In the secret
           # HOST: redis://:password@forgejo-valkey-primary.forgejo.svc.cluster.local:6379?pool_size=100&idle_timeout=180s
         queue:
-          TYPE: redis
+          TYPE: level
           # In the secret, same as redis host above
           # CONN_STR: 
         session:
-          PROVIDER: redis
+          PROVIDER: memory
           # In the secret
           # PROVIDER_CONFIG: 
       additionalConfigFromEnvs:
@@ -128,20 +131,20 @@ spec:
             secretKeyRef:
               name: forgejo-db-secret
               key: databasePassword
-        - name: FORGEJO__CACHE__HOST
-          valueFrom:
-            secretKeyRef:
-              name: forgejo-db-secret
-              key: cacheHost
-        - name: FORGEJO__QUEUE__CONN_STR
-          valueFrom:
-            secretKeyRef:
-              name: forgejo-db-secret
-              key: cacheHost
-        - name: FORGEJO__SESSION__PROVIDER_CONFIG
-          valueFrom:
-            secretKeyRef:
-              name: forgejo-db-secret
-              key: cacheHost
+        # - name: FORGEJO__CACHE__HOST
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: forgejo-db-secret
+        #       key: cacheHost
+        # - name: FORGEJO__QUEUE__CONN_STR
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: forgejo-db-secret
+        #       key: cacheHost
+        # - name: FORGEJO__SESSION__PROVIDER_CONFIG
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: forgejo-db-secret
+        #       key: cacheHost
 
     

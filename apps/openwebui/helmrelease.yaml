@@ -12,25 +12,36 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: openwebui
-      #version: "<=2.24"
   interval: 10m0s
+  valuesFrom:
+    - kind: Secret
+      name: owui-helm-secrets
+      valuesKey: values.yaml
   values:
+    extraEnvFrom:
+      - secretRef:
+          name: owui-secrets
+          key: OLLAMA_BASE_URL
+      - secretRef:
+          name: owui-secrets
+          key: OPENAPI_API_KEY
     extraEnvVars:
       - name: ENABLE_OAUTH_SIGNUP
         value: "TRUE"
-      # Enable to let users who are not part of any group sign in
-      # - name: DEFAULT_USER_ROLE
-      #   value: "user"
+      - name: ENABLE_OAUTH_PERSISTENT_CONFIG
+        value: "False"
+      - name: ENABLE_INITIAL_ADMIN_SIGNUP
+        value: "False"
+      - name: ENABLE_LOGIN_FORM
+        value: "False"
+    openaiBaseApiUrl: http://owui-pipelines.owui.svc.cluster.local:9099
     ollama:
+      enabled: false
+    persistence:
       enabled: true
-      persistentVolume:
-        enabled: true
-        #existingClaim: ollama-pvc
-      gpu:
-        enabled: true
-        type: 'nvidia'
-        number: 1
-      runtimeClassName: nvidia
+      existingClaim: openwebui
+    pipelines:
+      enabled: false
     sso:
       enabled: true
       enableSignUp: true
@@ -50,3 +61,101 @@ spec:
         providerName: "Authentik"
         providerUrl: "https://sso.moonpiedumpl.ing/application/o/chat/.well-known/openid-configuration"
         scopes: "openid profile email"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ollama
+  namespace: owui
+spec:
+  chart:
+    spec:
+      chart: ollama
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: ollama
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              - op: remove
+                path: /spec/template/spec/containers/0/ports
+            target:
+              kind: Deployment
+              name: ollama
+          - patch: |
+              - op: replace
+                path: /spec/template/spec/containers/0/env/0/value
+                value: localhost:11434
+            target:
+              kind: Deployment
+              name: ollama
+          - patch: |
+              - op: remove
+                path: /spec/template/spec/containers/0/readinessProbe
+            target:
+              kind: Deployment
+              name: ollama
+          - patch: |
+              - op: add
+                path: /spec/template/spec/containers/-
+                value:
+                  name: caddy
+                  image: docker.io/library/caddy
+                  ports:
+                    - containerPort: 80
+                      name: http
+                  volumeMounts:
+                  - name: caddy-config
+                    mountPath: /etc/caddy/
+            target:
+              kind: Deployment
+              name: ollama
+          - patch: |
+              - op: add
+                path: /spec/template/spec/volumes/-
+                value:
+                  name: caddy-config
+                  configMap:
+                    name: caddy-config
+            target:
+              kind: Deployment
+              name: ollama
+  interval: 10m0s
+  values:
+    persistentVolume:
+      enabled: true
+      existingClaim: ollama
+    gpu:
+      enabled: true
+      type: 'nvidia'
+      number: 1
+    runtimeClassName: nvidia
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: owui-pipelines
+  namespace: owui
+spec:
+  chart:
+    spec:
+      chart: pipelines
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openwebui
+  interval: 10m0s
+  values:
+    persistence:
+      enabled: true
+      existingClaim: owui-pipelines
+    extraEnvVars:
+      - name: PIPELINES_URLS
+        value: https://github.com/open-webui/pipelines/blob/main/examples/filters/detoxify_filter_pipeline.py
+      - name: PIPELINES_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: owui-secrets
+            key: PIPELINES_API_KEY

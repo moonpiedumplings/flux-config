@@ -12,5 +12,44 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: openebs
-      # version: 
+      version: "4.3.2"
+  # postRenderers:
+  #   - kustomize:
+  #       patches:
+  #         - patch: |
+  #             - op: replace
+  #               path: /spec/replicas
+  #               value: 1
+  #           target:
+  #             kind: StatefulSet
+  #             name: openebs-nats
+  #         - patch: |
+  #             - op: replace
+  #               path: /spec/replicas
+  #               value: 1
+  #             - op: replace
+  #               path: /spec/containers/etcd/env/5/value
+  #               value: 1
+  #           target:
+  #             kind: StatefulSet
+  #             name: openebs-etcd
+      # version: "3.1.0"
   interval: 1m0s
+  values:
+    engines:
+      local:
+        lvm:
+          enabled: false
+        rawfile:
+          enabled: true
+        zfs:
+          enabled: false
+      replicated:
+        mayastor:
+          enabled: false
+    loki:
+      enabled: false
+      minio:
+        enabled: false
+    alloy:
+      enabled: false

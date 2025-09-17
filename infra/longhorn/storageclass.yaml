@@ -1,0 +1,23 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-databases
+provisioner: driver.longhorn.io
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "1"
+  fsType: "ext4"
+  staleReplicaTimeout: "30"
+  dataLocality: "strict-local"
+---
+kind: VolumeSnapshotClass
+apiVersion: snapshot.storage.k8s.io/v1
+metadata:
+  name: longhorn-snapshot
+driver: driver.longhorn.io
+deletionPolicy: Delete
+parameters:
+  type: snap

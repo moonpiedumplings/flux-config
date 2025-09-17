@@ -44,6 +44,6 @@ metadata:
   namespace: openfga
 subsets:
   - addresses:
-      - ip: 130.166.79.34
+      - ip: 130.166.84.207
     ports:
       - port: 8443
