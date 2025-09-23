@@ -1,0 +1,28 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rabbitmq
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: rabbitmq
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-helm
+  interval: 1m0s
+  valuesFrom:
+    
+    - kind: ConfigMap
+      name: openstack-endpoints
+      valuesKey: values.yaml
+  values:
+    images:
+      tags:
+        prometheus_rabbitmq_exporter_helm_tests: quay.io/airshipit/heat:2025.1-ubuntu_noble
+        rabbitmq_init: quay.io/airshipit/heat:2025.1-ubuntu_noble
+    pod:
+      replicas:
+        server: 1

@@ -39,6 +39,8 @@ spec:
         tcp-services-configmap: ingress-nginx/tcp-services
       admissionWebhooks:
         enabled: false
+      scope:
+        enabled: false
       service:
         enabled: false
       #   type: LoadBalancer
@@ -49,7 +51,9 @@ spec:
         enabled: true
       # hostNetwork:
       #   enabled: true
+      ingressClass: nginx-cluster
       ingressClassResource:
+        name: nginx-cluster
         default: true
 ---
 apiVersion: v1

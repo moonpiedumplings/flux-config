@@ -1,0 +1,21 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: openvswitch
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: openvswitch
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-helm
+  interval: 30m0s
+  install:
+    disableWait: true
+  values:
+    images:
+      tags:
+        openvswitch_db_server: docker.io/openstackhelm/openvswitch:latest-ubuntu_jammy
+        openvswitch_vswitchd: docker.io/openstackhelm/openvswitch:latest-ubuntu_jammy

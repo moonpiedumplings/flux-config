@@ -1,0 +1,17 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ceph-adapter-rook
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: ceph-adapter-rook
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-helm
+  interval: 1m0s
+  install:
+    disableWait: true

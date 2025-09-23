@@ -1,0 +1,124 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openstack-secrets
+  namespace: openstack
+type: Opaque
+stringData:
+  DB_ADMIN_PASS: securepassword
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openstack-old-secrets
+  namespace: openstack
+type: Opaque
+stringData:
+  values.yaml: |-
+    endpoints:
+      oslo_db:
+        auth:
+          admin:
+            username: root
+            password: securepassword
+          neutron:
+            username: neutron
+            password: securepassword
+          keystone:
+            username: keystone
+            password: securepassword
+          nova:
+            username: nova
+            password: securepassword
+          glance:
+            username: glance
+            password: securepassword
+          placement:
+            username: placement
+            password: securepassword
+          nova_api:
+            username: nova
+            password: securepassword
+      oslo_messaging:
+        auth:
+          erlang_cookie: openstack-cookie
+          user:
+            username: rabbitmq
+            password: securepassword
+          guest:
+            password: securepassowrd
+          admin:
+            username: rabbitmq
+            password: securepassword
+          neutron:
+            username: neutron
+            password: securepassword
+          keystone:
+            username: keystone
+            password: securepassword
+          nova:
+            username: nova
+            password: securepassword
+          glance:
+            username: glance
+            password: securepassword
+          placement:
+            username: placement
+            password: securepassword
+          nova_api:
+            username: nova
+            password: securepassword
+          cinder:
+            username: cinder
+            password: securepassword
+      identity:
+        auth:
+          admin:
+            region_name: RegionOne
+            username: admin
+            password: securepassword
+            project_name: admin
+            user_domain_name: default
+            project_domain_name: default
+            default_domain_id: default
+          neutron:
+            role: admin,service
+            region_name: RegionOne
+            username: neutron
+            password: securepassword
+            project_name: service
+            user_domain_name: service
+            project_domain_name: service
+          nova:
+            role: admin,service
+            region_name: RegionOne
+            project_name: service
+            username: neutron_nova
+            password: securepassword
+            user_domain_name: service
+            project_domain_name: service
+          placement:
+            role: admin,service
+            region_name: RegionOne
+            project_name: service
+            username: placment
+            password: securepassword
+            user_domain_name: service
+            project_domain_name: service
+          glance:
+            role: admin,service
+            region_name: RegionOne
+            project_name: service
+            username: glance
+            password: securepassword
+            user_domain_name: service
+            project_domain_name: service
+          cinder:
+            role: admin,service
+            region_name: RegionOne
+            project_name: service
+            username: cinder
+            password: securepassword
+            user_domain_name: service
+            project_domain_name: service

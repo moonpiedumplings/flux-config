@@ -9,6 +9,7 @@ spec:
     requests:
       storage: 60Gi
   volumeMode: Filesystem
+  storageClassName: general
   accessModes:
     - ReadWriteOnce
 ---
@@ -22,6 +23,7 @@ spec:
     requests:
       storage: 2Gi
   volumeMode: Filesystem
+  storageClassName: general
   accessModes:
     - ReadWriteOnce
 ---
@@ -35,5 +37,6 @@ spec:
     requests:
       storage: 2Gi
   volumeMode: Filesystem
+  storageClassName: general
   accessModes:
     - ReadWriteOnce

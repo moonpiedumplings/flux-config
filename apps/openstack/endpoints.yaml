@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openstack-endpoints
+  namespace: openstack
+data:
+  values.yaml: |-
+      endpoints:
+        identity:
+          name: keystone
+          host_fqdn_override:
+            public:
+              host: "keystone.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+                crt: keystone-pub-tls
+                key: keystone-pub-tls
+        images:
+          host_fqdn_override:
+            public:
+              host: "glance.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+        volume:
+          name: cinder
+          host_fqdn_override:
+            public:
+              host: "cinder.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+                
+        dashboard:
+          name: horizon
+          host_fqdn_override:
+            public:
+              host: "openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+        network:
+          name: neutron
+          host_fqdn_override:
+            public:
+              host: "neutron.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+        compute:
+          name: nova
+          host_fqdn_override:
+            public:
+              host: "nova.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+        compute_novnc_proxy:
+          name: nova
+          host_fqdn_override:
+            public:
+              host: "novncproxy.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+        compute_serial_proxy:
+          name: nova
+          host_fqdn_override:
+            public:
+              host: "serialproxy.openstack.moonpiedumpl.ing"
+              tls:
+                issuerRef:
+                  name: letsencrypt-staging
+                crt: serialproxy-cert
+                key: serialproxy-key

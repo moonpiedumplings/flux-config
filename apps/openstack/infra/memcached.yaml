@@ -1,0 +1,23 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: memcached
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: memcached
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-helm
+  interval: 1m0s
+  valuesFrom:
+    
+    - kind: ConfigMap
+      name: openstack-endpoints
+      valuesKey: values.yaml
+  values:
+    pod:
+      replicas:
+        server: 1

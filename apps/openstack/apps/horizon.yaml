@@ -1,0 +1,31 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: horizon
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: horizon
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-helm
+  interval: 1m0s
+  dependsOn:
+    - name: mariadb
+    - name: memcached
+    - name: rabbitmq
+    - name: keystone
+  valuesFrom:
+    
+    - kind: ConfigMap
+      name: openstack-endpoints
+      valuesKey: values.yaml
+  values:
+    images:
+      tags:
+        db_init: quay.io/airshipit/heat:2025.1-ubuntu_noble
+        db_drop: quay.io/airshipit/heat:2025.1-ubuntu_noble
+        horizon_db_sync: quay.io/airshipit/horizon:2025.1-ubuntu_noble
+        horizon: quay.io/airshipit/horizon:2025.1-ubuntu_noble

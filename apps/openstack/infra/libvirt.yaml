@@ -1,0 +1,30 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: libvirt
+  namespace: openstack
+spec:
+  chart:
+    spec:
+      chart: libvirt
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: openstack-helm
+  interval: 1m0s
+  install:
+    disableWait: true
+  valuesFrom:
+    
+    - kind: ConfigMap
+      name: openstack-endpoints
+      valuesKey: values.yaml
+  values:
+    images:
+      tags:
+        libvirt: docker.io/openstackhelm/libvirt:2025.1-ubuntu_noble
+    # Since we are using lvm
+    conf:
+      ceph:
+        enabled: true
