@@ -14,10 +14,12 @@ spec:
         name: openstack-helm
   interval: 1m0s
   valuesFrom:
-    
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-messaging
   values:
     images:
       tags:

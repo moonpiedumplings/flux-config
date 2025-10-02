@@ -15,14 +15,28 @@ spec:
   interval: 1m0s
   install:
     disableWait: true
+  timeout: 30m0s
   dependsOn:
     - name: mariadb
     - name: memcached
     - name: rabbitmq
+    - name: keystone
   valuesFrom:
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-db
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-messaging
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-cache
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: neutron-identity
   values:
     images:
       tags:

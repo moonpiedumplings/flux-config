@@ -21,10 +21,21 @@ spec:
     - name: rabbitmq
     - name: keystone
   valuesFrom:
-    
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-db
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-messaging
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-cache
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: placement-identity
   values:
     images:
       pull_policy: IfNotPresent
@@ -38,8 +49,3 @@ spec:
         placement_db_sync: "quay.io/airshipit/placement:2025.1-ubuntu_noble"
         dep_check: "quay.io/airshipit/kubernetes-entrypoint:latest-ubuntu_focal"
         image_repo_sync: "docker.io/docker:17.07.0"
-    dependencies:
-      static:
-        db_sync:
-          jobs:
-            - placement-db-init

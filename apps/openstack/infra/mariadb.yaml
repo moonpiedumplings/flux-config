@@ -20,6 +20,9 @@ spec:
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: main-db
   values:
     images:
       tags:
@@ -28,27 +31,3 @@ spec:
     pod:
       replicas:
         server: 1
-    endpoints:
-      oslo_db:
-        auth:
-          admin:
-            username: root
-            password: "${DB_ADMIN_PASS}"
-          neutron:
-            username: neutron
-            password: securepassword
-          keystone:
-            username: keystone
-            password: securepassword
-          nova:
-            username: nova
-            password: securepassword
-          glance:
-            username: glance
-            password: securepassword
-          placement:
-            username: placement
-            password: securepassword
-          nova_api:
-            username: nova
-            password: securepassword

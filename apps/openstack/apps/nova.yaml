@@ -13,17 +13,31 @@ spec:
         kind: HelmRepository
         name: openstack-helm
   interval: 1m0s
+  timeout: 30m0s
   install:
     disableWait: true
   dependsOn:
     - name: mariadb
     - name: memcached
     - name: rabbitmq
+    - name: keystone
   valuesFrom:
     
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-db
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-messaging
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-cache
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: nova-identity
   values:
     images:
       tags:
@@ -49,3 +63,34 @@ spec:
     conf:
       ceph:
         enabled: true
+    bootstrap:
+      wait_for_computes:
+        enabled: true
+    network:
+      osapi:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+      metadata:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+      novncproxy:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod

@@ -19,11 +19,23 @@ spec:
     - name: mariadb
     - name: memcached
     - name: rabbitmq
+    - name: keystone
   valuesFrom:
-    
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-db
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-messaging
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: oslo-cache
+    - kind: Secret
+      name: openstack-secrets
+      valuesKey: glance-identity
   values:
     images:
       tags:

@@ -12,10 +12,10 @@ data:
             public:
               host: "keystone.openstack.moonpiedumpl.ing"
               tls:
+                name: keystone-tls-public
                 issuerRef:
                   name: letsencrypt-staging
-                crt: keystone-pub-tls
-                key: keystone-pub-tls
+                  kind: ClusterIssuer
         images:
           host_fqdn_override:
             public:
@@ -38,8 +38,10 @@ data:
             public:
               host: "openstack.moonpiedumpl.ing"
               tls:
+                name: horizon-tls-public
                 issuerRef:
                   name: letsencrypt-staging
+                  kind: ClusterIssuer
         network:
           name: neutron
           host_fqdn_override:
@@ -74,3 +76,16 @@ data:
                   name: letsencrypt-staging
                 crt: serialproxy-cert
                 key: serialproxy-key
+  horizon-values: |-
+    network:
+      dashboard:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            nginx.ingress.kubernetes.io/proxy-body-size: 300m
+            kubernetes.io/tls-acme: "true"
+            cert-manager.io/cluster-issuer: "letsencrypt-staging"
