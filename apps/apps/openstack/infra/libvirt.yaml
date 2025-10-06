@@ -16,15 +16,14 @@ spec:
   install:
     disableWait: true
   valuesFrom:
-    
     - kind: ConfigMap
       name: openstack-endpoints
       valuesKey: values.yaml
   values:
     images:
       tags:
-        libvirt: docker.io/openstackhelm/libvirt:2025.1-ubuntu_noble
-    # Since we are using lvm
+        # libvirt: docker.io/openstackhelm/libvirt:2025.1-ubuntu_noble
+        libvirt: docker.io/openstackhelm/libvirt:2025.2-ubuntu_noble
     conf:
       ceph:
         enabled: true

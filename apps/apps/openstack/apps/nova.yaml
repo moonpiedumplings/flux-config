@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: openstack-helm
+      version: "2025.1.7"
   interval: 1m0s
   timeout: 30m0s
   install:
@@ -50,7 +51,8 @@ spec:
         nova_api: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_cell_setup: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_cell_setup_init: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        nova_compute: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
+        # nova_compute: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
+        nova_compute: quay.io/airshipit/nova:2025.1-ubuntu_jammy
         nova_compute_ssh: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_conductor: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_db_sync: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
@@ -66,31 +68,31 @@ spec:
     bootstrap:
       wait_for_computes:
         enabled: true
-    network:
-      osapi:
-        ingress:
-          public: true
-          classes:
-            namespace: "nginx"
-            cluster: "nginx-cluster"
-          annotations:
-            nginx.ingress.kubernetes.io/rewrite-target: /
-            cert-manager.io/cluster-issuer: letsencrypt-prod
-      metadata:
-        ingress:
-          public: true
-          classes:
-            namespace: "nginx"
-            cluster: "nginx-cluster"
-          annotations:
-            nginx.ingress.kubernetes.io/rewrite-target: /
-            cert-manager.io/cluster-issuer: letsencrypt-prod
-      novncproxy:
-        ingress:
-          public: true
-          classes:
-            namespace: "nginx"
-            cluster: "nginx-cluster"
-          annotations:
-            nginx.ingress.kubernetes.io/rewrite-target: /
-            cert-manager.io/cluster-issuer: letsencrypt-prod
+    # network:
+    #   osapi:
+    #     ingress:
+    #       public: true
+    #       classes:
+    #         namespace: "nginx"
+    #         cluster: "nginx-cluster"
+    #       annotations:
+    #         nginx.ingress.kubernetes.io/rewrite-target: /
+    #         cert-manager.io/cluster-issuer: letsencrypt-prod
+    #   metadata:
+    #     ingress:
+    #       public: true
+    #       classes:
+    #         namespace: "nginx"
+    #         cluster: "nginx-cluster"
+    #       annotations:
+    #         nginx.ingress.kubernetes.io/rewrite-target: /
+    #         cert-manager.io/cluster-issuer: letsencrypt-prod
+    #   novncproxy:
+    #     ingress:
+    #       public: true
+    #       classes:
+    #         namespace: "nginx"
+    #         cluster: "nginx-cluster"
+    #       annotations:
+    #         nginx.ingress.kubernetes.io/rewrite-target: /
+    #         cert-manager.io/cluster-issuer: letsencrypt-prod
