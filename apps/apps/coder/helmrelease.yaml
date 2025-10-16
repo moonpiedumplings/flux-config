@@ -2,28 +2,6 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: coder-pg
-  namespace: coder
-spec:
-  chart:
-    spec:
-      chart: postgresql
-      reconcileStrategy: ChartVersion
-      sourceRef:
-        kind: HelmRepository
-        name: bitnami
-  interval: 1m0s
-  valuesFrom:
-    - kind: Secret
-      name: coder-pg-secrets
-      valuesKey: values.yaml
-  values:
-    persistence:
-      size: 10Gi
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
   name: coder
   namespace: coder
 spec:
@@ -34,20 +12,18 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: coder
-      version: "<=2.24"
-  dependsOn:
-    - name: coder-pg
+      version: "<=2.27"
   interval: 10m0s
   values:
     coder:
       env: 
-        # Appealing, but I would like the "owner" user for admin purposes
-        # - name: CODER_DISABLE_PASSWORD_AUTH
-        #  value: "true"
+        #  Enable for initial install, disable otherwise
+        - name: CODER_DISABLE_PASSWORD_AUTH
+          value: "true"
         - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
           value: "false"
         - name: CODER_OIDC_ISSUER_URL
-          value: "https://sso.moonpiedumpl.ing/application/o/coder/"
+          value: "https://idp.moonpiedumpl.ing/application/o/coder/"
         - name: CODER_OIDC_IGNORE_EMAIL_VERIFIED
           value: "true"
         - name: CODER_OIDC_CLIENT_ID
@@ -80,3 +56,16 @@ spec:
           enable: true
           secretName: "coder-ssl"
           wildcardSecretName: "coder-wildcard-ssl"
+      serviceAccount:
+        extraRules:
+          - apiGroups: [""]
+            resources: ["configmaps"]
+            verbs:
+              - create
+              - delete
+              - deletecollection
+              - get
+              - list
+              - patch
+              - update
+              - watch

@@ -74,3 +74,13 @@ spec:
         openvswitch_agent:
           ovs:
             bridge_mappings: public:br-ex
+    network:
+      server:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod

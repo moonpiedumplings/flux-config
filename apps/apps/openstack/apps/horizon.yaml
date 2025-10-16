@@ -33,9 +33,6 @@ spec:
     - kind: Secret
       name: openstack-secrets
       valuesKey: horizon-identity
-    # - kind: ConfigMap
-    #   name: openstack-endpoints
-    #   valuesKey: horizon-values
   values:
     images:
       tags:
@@ -72,5 +69,5 @@ spec:
             cluster: "nginx-cluster"
           annotations:
             nginx.ingress.kubernetes.io/rewrite-target: /
-            cert-manager.io/cluster-issuer: letsencrypt-prod  
-            nginx.ingress.kubernetes.io/proxy-body-size: 25G
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+            nginx.ingress.kubernetes.io/proxy-body-size: "0"

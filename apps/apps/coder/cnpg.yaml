@@ -2,10 +2,13 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: forgejo-postgres  
-  namespace: forgejo
+  name: coder-postgres
+  namespace: coder
 spec:
   instances: 1
+  # See rolling updates
+  # https://cloudnative-pg.io/documentation/1.27/postgres_upgrades/
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.6
   storage:
     pvcTemplate:
       accessModes:
@@ -20,10 +23,10 @@ spec:
        className: longhorn-snapshot
   bootstrap:
     initdb:
-      database: forgejo
-      owner: forgejo
+      database: coder
+      owner: coder
       secret:
-        name: forgejo-db-secret
+        name: coder-db-secret
   managed:
     services:
       disabledDefaultServices: ["ro", "r"] 
@@ -31,13 +34,14 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: daily-forgejo
-  namespace: forgejo
+  name: daily-coder
+  namespace: coder
   annotations:
     backup.cnpg.io/volumeSnapshotDeadline: "20"
 spec:
   schedule: "0 0 0 * * *"
   backupOwnerReference: self
   cluster:
-    name: forgejo-postgres
+    name: coder-postgres
   method: volumeSnapshot
+

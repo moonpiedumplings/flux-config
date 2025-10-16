@@ -13,7 +13,7 @@ spec:
         kind: HelmRepository
         name: authentik
         # Figure out what version I should have
-      version: "<=2025.6"
+      version: "<=2025.8"
   interval: 1m0s
   valuesFrom:
     - kind: Secret
@@ -26,26 +26,31 @@ spec:
         # performance data to sentry.io, and is fully opt-in
         error_reporting:
             enabled: true
-        # postgresql:
-        #     password: "ThisIsNotASecurePassword"
+        postgresql:
+          enabled: false
+          host: authentik-postgres-rw.authentik.svc.cluster.local
+          # password: "ThisIsNotASecurePassword"
+        redis:
+          enabled: true
+          host: "authentik-redis-master.authentik.svc.cluster.local"
     server:
-        ingress:
-            # Should default to nginx already
-            # ingressClassName: nginx
-            # Change to true when done
-            enabled: true
-            hosts:
-                - sso.moonpiedumpl.ing
-            annotations:
-                cert-manager.io/cluster-issuer: "letsencrypt-prod"
-                acme.cert-manager.io/http01-edit-in-place: "true"
-            tls:
-              - hosts: [sso.moonpiedumpl.ing]
-                secretName: sso-acme
+      ingress:
+          # Should default to nginx already
+          # ingressClassName: nginx
+          # Change to true when done
+          enabled: true
+          hosts:
+              - idp.moonpiedumpl.ing
+          annotations:
+              cert-manager.io/cluster-issuer: "letsencrypt-prod"
+              acme.cert-manager.io/http01-edit-in-place: "true"
+          tls:
+            - hosts: [idp.moonpiedumpl.ing]
+              secretName: sso-acme
     postgresql:
-        enabled: true
-        # auth:
-        #     password: "ThisIsNotASecurePassword"
+      enabled: false
     redis:
+      enabled: true
+      auth:
         enabled: true
-    
+  

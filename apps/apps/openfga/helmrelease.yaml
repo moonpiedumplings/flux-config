@@ -24,7 +24,6 @@ spec:
       enabled: true
       annotations:
         cert-manager.io/cluster-issuer: "letsencrypt-prod"
-        acme.cert-manager.io/http01-edit-in-place: "true"
       hosts:
         - host: openfga.moonpiedumpl.ing
           paths:
@@ -38,14 +37,14 @@ spec:
     datastore:
       engine: postgres
     postgresql:
-      enabled: true
+      enabled: false
       auth:
         database: postgres
         # In the secret
         # postgresPassword: secretpasswrod
     # In the secret
     # datastore:
-    #   uri: "postgres://postgres:password@openfga-postgresql.openfga.svc.cluster.local:5432/postgres?sslmode=disable"
+    #   uri: "postgres://postgres:password@openfga-postgres-rw.openfga.svc.cluster.local:5432/postgres?sslmode=disable"
     authn:
       method: preshared
       # In the secret

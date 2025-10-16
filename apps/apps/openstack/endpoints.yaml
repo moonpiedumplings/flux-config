@@ -16,7 +16,7 @@ data:
                 issuerRef:
                   name: letsencrypt-staging
                   kind: ClusterIssuer
-        images:
+        image:
           host_fqdn_override:
             public:
               host: "glance.openstack.moonpiedumpl.ing"
@@ -76,16 +76,3 @@ data:
                   name: letsencrypt-staging
                 crt: serialproxy-cert
                 key: serialproxy-key
-  horizon-values: |-
-    network:
-      dashboard:
-        ingress:
-          public: true
-          classes:
-            namespace: "nginx"
-            cluster: "nginx-cluster"
-          annotations:
-            nginx.ingress.kubernetes.io/rewrite-target: /
-            nginx.ingress.kubernetes.io/proxy-body-size: 300m
-            kubernetes.io/tls-acme: "true"
-            cert-manager.io/cluster-issuer: "letsencrypt-staging"

@@ -27,7 +27,7 @@ spec:
             # see https://artifacthub.io/packages/helm/bitnami/postgresql
             database: forgejo
             username: forgejo
-            existingSecret: forgejo-postgres-bitnami-secret
+            existingSecret: forgejo-db-secret
         primary:
           persistence:
             enabled: true
@@ -35,14 +35,6 @@ spec:
       enabled: false
     valkey:
       enabled: false
-      auth:
-        # see https://github.com/bitnami/charts/blob/main/bitnami/valkey/values.yaml
-        existingSecret: forgejo-valkey-bitnami-secret
-        existingSecretPasswordKey: password
-      primary:
-        persistence:
-          enabled: true
-        
     persistence:
       enabled: true
     service:
@@ -60,7 +52,7 @@ spec:
         - name: 'Authentik'
           provider: openidConnect
           existingSecret: forgejo-oauth-secret
-          autoDiscoverUrl: "https://sso.moonpiedumpl.ing/application/o/forgejo/.well-known/openid-configuration"
+          autoDiscoverUrl: "https://idp.moonpiedumpl.ing/application/o/forgejo/.well-known/openid-configuration"
           iconUrl: https://cdn.jsdelivr.net/gh/selfhst/icons/png/authentik.png
           # Not documented at all
           # I am just guessing from: https://github.com/DennisRasey/forgejo/blob/0c7612bca430896d240a51ed231cb2922d579114/cmd/admin_auth_oauth_test.go#L56
@@ -115,36 +107,14 @@ spec:
           # PASSWD: password
         cache:
           ADAPTER: memory
-          # In the secret
-          # HOST: redis://:password@forgejo-valkey-primary.forgejo.svc.cluster.local:6379?pool_size=100&idle_timeout=180s
         queue:
           TYPE: level
-          # In the secret, same as redis host above
-          # CONN_STR: 
         session:
           PROVIDER: memory
-          # In the secret
-          # PROVIDER_CONFIG: 
       additionalConfigFromEnvs:
         - name: FORGEJO__DATABASE__PASSWD
           valueFrom:
             secretKeyRef:
               name: forgejo-db-secret
               key: databasePassword
-        # - name: FORGEJO__CACHE__HOST
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: forgejo-db-secret
-        #       key: cacheHost
-        # - name: FORGEJO__QUEUE__CONN_STR
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: forgejo-db-secret
-        #       key: cacheHost
-        # - name: FORGEJO__SESSION__PROVIDER_CONFIG
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: forgejo-db-secret
-        #       key: cacheHost
-
     

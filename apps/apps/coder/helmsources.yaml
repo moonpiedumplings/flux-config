@@ -2,16 +2,6 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: bitnami
-  namespace: coder
-spec:
-  interval: 10m0s
-  url: oci://docker.io/bitnamicharts
-  type: oci
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
   name: coder
   namespace: coder
 spec:

@@ -68,31 +68,34 @@ spec:
     bootstrap:
       wait_for_computes:
         enabled: true
-    # network:
-    #   osapi:
-    #     ingress:
-    #       public: true
-    #       classes:
-    #         namespace: "nginx"
-    #         cluster: "nginx-cluster"
-    #       annotations:
-    #         nginx.ingress.kubernetes.io/rewrite-target: /
-    #         cert-manager.io/cluster-issuer: letsencrypt-prod
-    #   metadata:
-    #     ingress:
-    #       public: true
-    #       classes:
-    #         namespace: "nginx"
-    #         cluster: "nginx-cluster"
-    #       annotations:
-    #         nginx.ingress.kubernetes.io/rewrite-target: /
-    #         cert-manager.io/cluster-issuer: letsencrypt-prod
-    #   novncproxy:
-    #     ingress:
-    #       public: true
-    #       classes:
-    #         namespace: "nginx"
-    #         cluster: "nginx-cluster"
-    #       annotations:
-    #         nginx.ingress.kubernetes.io/rewrite-target: /
-    #         cert-manager.io/cluster-issuer: letsencrypt-prod
+    pod:
+      useHostNetwork:
+        novncproxy: false
+    network:
+      osapi:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+      metadata:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+      novncproxy:
+        ingress:
+          public: true
+          classes:
+            namespace: "nginx"
+            cluster: "nginx-cluster"
+          annotations:
+            nginx.ingress.kubernetes.io/rewrite-target: /
+            cert-manager.io/cluster-issuer: letsencrypt-prod

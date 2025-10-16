@@ -117,7 +117,7 @@ spec:
             OIDCXForwardedHeaders X-Forwarded-Host X-Forwarded-Proto X-Forwarded-Port
             OIDCResponseType "code"
             OIDCScope "openid email profile groups"
-            OIDCProviderMetadataURL "https://sso.moonpiedumpl.ing/application/o/openstack/"
+            OIDCProviderMetadataURL "https://idp.moonpiedumpl.ing/application/o/openstack/"
 
             OIDCClientID 5oIuKo60MxCdwiE1yQ33oGRMmKx3ZlMUIK9bAmhQ
             OIDCClientSecret "exec:/bin/cat /etc/oidc-secret/client-secret"
