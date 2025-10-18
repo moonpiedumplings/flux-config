@@ -93,6 +93,7 @@ data:
     fi
 
     export CODER_AGENT_AUTH="token"
+    export CODER_AGENT_TOKEN_FILE="/secrets/token"
     export CODER_AGENT_URL="https://coder.moonpiedumpl.ing/"
 
     output=$("./${BINARY_NAME}" --version | head -n1)

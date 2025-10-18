@@ -9,8 +9,7 @@ spec:
     spec:
       chart: forgejo
       # Last version with working bitnami charts
-      #version: 13.0.1
-      version: "14.0.0"
+      #version: "14.0.0"
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
