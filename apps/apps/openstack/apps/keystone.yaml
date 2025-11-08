@@ -9,6 +9,7 @@ spec:
     spec:
       chart: keystone
       reconcileStrategy: ChartVersion
+      version: "<=2025.1"
       sourceRef:
         kind: HelmRepository
         name: openstack-helm
@@ -90,6 +91,9 @@ spec:
           backend_argument: memcached_expire_time:3600
         DEFAULT:
           max_token_size: 512
+        # See https://docs.openstack.org/releasenotes/keystone/2025.1.html
+        # See https://opendev.org/openstack/keystone/commit/0d2cc1a3af4dbd2825cef5992056bffe935eaadd
+        wsgi_script_name: null
       wsgi_keystone: |
         {{- $portInt := tuple "identity" "service" "api" $ | include "helm-toolkit.endpoints.endpoint_port_lookup" }}
 

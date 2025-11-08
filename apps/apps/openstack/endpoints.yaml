@@ -13,25 +13,19 @@ data:
               host: "keystone.openstack.moonpiedumpl.ing"
               tls:
                 name: keystone-tls-public
-                issuerRef:
-                  name: letsencrypt-staging
-                  kind: ClusterIssuer
         image:
           host_fqdn_override:
             public:
               host: "glance.openstack.moonpiedumpl.ing"
               tls:
-                issuerRef:
-                  name: letsencrypt-staging
+                name: glance-tls-public
         volume:
           name: cinder
           host_fqdn_override:
             public:
               host: "cinder.openstack.moonpiedumpl.ing"
               tls:
-                issuerRef:
-                  name: letsencrypt-staging
-                
+                name: cinder-tls-public
         dashboard:
           name: horizon
           host_fqdn_override:
@@ -39,33 +33,45 @@ data:
               host: "openstack.moonpiedumpl.ing"
               tls:
                 name: horizon-tls-public
-                issuerRef:
-                  name: letsencrypt-staging
-                  kind: ClusterIssuer
         network:
           name: neutron
           host_fqdn_override:
             public:
               host: "neutron.openstack.moonpiedumpl.ing"
               tls:
-                issuerRef:
-                  name: letsencrypt-staging
+                name: neutron-tls-public
         compute:
           name: nova
           host_fqdn_override:
             public:
               host: "nova.openstack.moonpiedumpl.ing"
               tls:
-                issuerRef:
-                  name: letsencrypt-staging
+                name: nova-tls-public
         compute_novnc_proxy:
-          name: nova
           host_fqdn_override:
             public:
               host: "novncproxy.openstack.moonpiedumpl.ing"
               tls:
+                name: novncproxy-tls-public
+          scheme: 
+            public: https
+          port:
+            novnc_proxy:
+              public: 443
+        compute_novnc_vencrypt:
+          hosts:
+            default: nova-novncproxy
+          host_fqdn_override:
+            default:
+              commonName: nova-novncproxy
+              tls:
+                secretName: nova-novncproxy-vencrypt
+                commonName: nova-novncproxy
+                usages:
+                  - client auth
                 issuerRef:
-                  name: letsencrypt-staging
+                  kind: ClusterIssuer
+                  name: ca-clusterissuer
         compute_serial_proxy:
           name: nova
           host_fqdn_override:

@@ -20,10 +20,14 @@ spec:
       name: openstack-endpoints
       valuesKey: values.yaml
   values:
+    manifests:
+      role_cert_manager: true
     images:
       tags:
-        # libvirt: docker.io/openstackhelm/libvirt:2025.1-ubuntu_noble
-        libvirt: docker.io/openstackhelm/libvirt:2025.2-ubuntu_noble
+        libvirt: docker.io/openstackhelm/libvirt:2025.1-ubuntu_noble
     conf:
       ceph:
         enabled: true
+      qemu:
+        vnc_tls: "1"
+        vnc_tls_x509_verify: "1"

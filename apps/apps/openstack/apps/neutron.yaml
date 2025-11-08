@@ -70,10 +70,10 @@ spec:
       plugins:
         ml2_conf:
           ml2_type_flat:
-            flat_networks: public
+            flat_networks: public,incus
         openvswitch_agent:
-          ovs:
-            bridge_mappings: public:br-ex
+          ovs:  
+            bridge_mappings: public:br-ex,incus:br-inc
     network:
       server:
         ingress:

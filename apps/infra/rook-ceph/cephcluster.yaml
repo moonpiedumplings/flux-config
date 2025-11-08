@@ -66,7 +66,7 @@ spec:
           - name: nfs
             enabled: false
       dashboard:
-        enabled: true
+        enabled: false
         ssl: true
       network:
         connections:
@@ -81,7 +81,7 @@ spec:
       logCollector:
         enabled: true
         periodicity: daily # one of: hourly, daily, weekly, monthly
-        maxLogSize: 500M # SUFFIX may be 'M' or 'G'. Must be at least 1M.
+        maxLogSize: 500M # SUFFIX may be 'M' or 'G'. Must be at least 1M. 
       cleanupPolicy:
         confirmation: ""
         sanitizeDisks:
@@ -98,13 +98,17 @@ spec:
         osd: system-node-critical
         mgr: system-cluster-critical
       storage: # cluster level storage configuration and selection
-        useAllNodes: true
+        useAllNodes: false
         useAllDevices: false
-        devices:
-          - name: sda
-            # config:
-            #   databaseSizeMB: "5120"
-            #   walSizeMB: "2048"
+        # devices:
+        #   - name: /dev/disk/by-id/ata-WDC_WD40EZAX-00C8UB0_WD-WX22D556K14P
+        #     # config:
+        #     #   databaseSizeMB: "5120"
+        #     #   walSizeMB: "2048"
+        nodes:
+          - name: thoth
+            devices:
+              - name: /dev/disk/by-id/ata-WDC_WD40EZAX-00C8UB0_WD-WX22D556K14P
       disruptionManagement:
         managePodBudgets: true
         osdMaintenanceTimeout: 30

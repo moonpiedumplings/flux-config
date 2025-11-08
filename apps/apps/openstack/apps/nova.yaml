@@ -51,8 +51,7 @@ spec:
         nova_api: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_cell_setup: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_cell_setup_init: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        # nova_compute: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
-        nova_compute: quay.io/airshipit/nova:2025.1-ubuntu_jammy
+        nova_compute: quay.io/airshipit/nova:2025.1-ubuntu_noble
         nova_compute_ssh: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_conductor: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_db_sync: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
@@ -62,15 +61,21 @@ spec:
         nova_spiceproxy: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_spiceproxy_assets: "quay.io/airshipit/nova:2025.1-ubuntu_noble"
         nova_service_cleaner: "docker.io/openstackhelm/ceph-config-helper:latest-ubuntu_jammy"
+    # manifests:
+    #   certificates: true
     conf:
       ceph:
         enabled: true
+      nova:
+        vnc:
+          #auth_schemes: "vencrypt"
+          auth_schemes: vencrypt,none
     bootstrap:
       wait_for_computes:
         enabled: true
-    pod:
-      useHostNetwork:
-        novncproxy: false
+    # pod:
+    #   useHostNetwork:
+    #     novncproxy: false
     network:
       osapi:
         ingress:

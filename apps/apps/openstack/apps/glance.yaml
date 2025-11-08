@@ -54,6 +54,16 @@ spec:
     volume:
       class_name: general
       size: 500Gi
+    conf:
+      glance:
+        # DEFAULT:
+        #   workers: 2
+      glance_api_uwsgi:
+        uwsgi:
+          chunked-input-limit: "4096000"
+          http-auto-chunked: true
+          http-raw-body: true
+          socket-timeout: 10
     network:
       api:
         ingress:
