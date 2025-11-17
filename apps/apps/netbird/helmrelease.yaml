@@ -1,0 +1,32 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbird
+  namespace: netbird
+spec:
+  chart:
+    spec:
+      chart: netbird
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: netbird
+  interval: 1m0s
+  values:
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: netbird-dashboard
+  namespace: netbird
+spec:
+  chart:
+    spec:
+      chart: netbird-dashboard
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: netbird
+  interval: 1m0s
+  values:

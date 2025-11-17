@@ -1,0 +1,136 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+  namespace: pangolin
+data:
+  traefik_config.yml: |
+    api:
+      insecure: true
+      dashboard: false
+
+    providers:
+      http:
+        endpoint: "http://localhost:3001/api/v1/traefik-config"
+        pollInterval: "5s"
+      file:
+        filename: "/etc/traefik/dynamic_config.yml"
+
+    experimental:
+      plugins:
+        badger:
+          moduleName: "github.com/fosrl/badger"
+          version: "v1.2.0"
+
+    log:
+      level: "INFO"
+      format: "common"
+
+    certificatesResolvers:
+      letsencrypt:
+        acme:
+          httpChallenge:
+            entryPoint: web
+          email: moonpiedumplings2@gmail.com # REPLACE WITH YOUR EMAIL
+          storage: "/letsencrypt/acme.json"
+          caServer: "https://acme-v02.api.letsencrypt.org/directory"
+
+    entryPoints:
+      web:
+        address: ":80"
+      websecure:
+        address: ":443"
+        transport:
+          respondingTimeouts:
+            readTimeout: "30m"
+        http:
+          tls:
+            certResolver: "letsencrypt"
+
+    serversTransport:
+      insecureSkipVerify: true
+
+    ping:
+        entryPoint: "web"
+  dynamic_config.yml: |
+    http:
+      middlewares:
+        redirect-to-https:
+          redirectScheme:
+            scheme: https
+
+      routers:
+        # HTTP to HTTPS redirect router
+        main-app-router-redirect:
+          rule: "Host(`pangolin.moonpiedumpl.ing`)" # REPLACE WITH YOUR DOMAIN
+          service: next-service
+          entryPoints:
+            - web
+          middlewares:
+            - redirect-to-https
+
+        # Next.js router (handles everything except API and WebSocket paths)
+        next-router:
+          rule: "Host(`pangolin.moonpiedumpl.ing`) && !PathPrefix(`/api/v1`)" # REPLACE WITH YOUR DOMAIN
+          service: next-service
+          entryPoints:
+            - websecure
+          tls:
+            certResolver: letsencrypt
+
+        # API router (handles /api/v1 paths)
+        api-router:
+          rule: "Host(`pangolin.moonpiedumpl.ing`) && PathPrefix(`/api/v1`)" # REPLACE WITH YOUR DOMAIN
+          service: api-service
+          entryPoints:
+            - websecure
+          tls:
+            certResolver: letsencrypt
+
+        # WebSocket router
+        ws-router:
+          rule: "Host(`pangolin.moonpiedumpl.ing`)" # REPLACE WITH YOUR DOMAIN
+          service: api-service
+          entryPoints:
+            - websecure
+          tls:
+            certResolver: letsencrypt
+
+      services:
+        next-service:
+          loadBalancer:
+            servers:
+              - url: "http://localhost:3002" # Next.js server
+
+        api-service:
+          loadBalancer:
+            servers:
+              - url: "http://localhost:3000" # API/WebSocket server
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pangolin-config
+  namespace: pangolin
+data:
+    # Gets mounted into config/config.yml
+  config.yml: |
+    app:
+      dashboard_url: "https://pangolin.moonpiedumpl.ing"
+
+    domains:
+      domain1:
+        base_domain: "pangolin.moonpiedumpl.ing"
+        cert_resolver: "letsencrypt"
+
+    server:
+      secret: "your-strong-secret"
+
+    gerbil:
+      base_endpoint: "gerbil.moonpiedumpl.ing"
+
+    flags:
+      require_email_verification: false
+      disable_signup_without_invite: true
+      disable_user_create_org: true

@@ -1,0 +1,126 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pangolin
+  namespace: pangolin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pangolin
+  template:
+    metadata:
+      labels:
+        app: pangolin
+    spec:
+      containers:
+        - name: pangolin
+          image: fosrl/pangolin:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: "SERVER_SECRET"
+              valueFrom:
+                secretKeyRef:
+                  key: pangolin_secret_key
+                  name: pangolin-secret
+          # ports:
+          #   - name: http
+          #     containerPort: 3001
+          #     protocol: TCP
+          volumeMounts:
+            - name: pangolin-config
+              mountPath: /app/config/
+            - name: pangolin-data
+              mountPath: /app/config/db
+              subPath: db
+            - name: pangolin-data
+              mountPath: /app/config/logs
+              subPath: logs
+            - name: traefik-config
+              mountPath: /app/config/traefik
+            - name: pangolin-data
+              mountPath: /var/certificates
+            - name: pangolin-data
+              mountPath: /var/dynamic
+          resources: {}
+        - name: gerbil
+          image: fosrl/gerbil:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - --reachableAt=http://localhost:3004
+            - --generateAndSaveKeyTo=/var/config/key
+            - --remoteConfig=http://localhost:3001/api/v1/
+          env:
+            - name: "SERVER_SECRET"
+              valueFrom:
+                secretKeyRef:
+                  key: pangolin_secret_key
+                  name: pangolin-secret
+          ports:
+            # Exposed via Services below:
+            - name: web-80
+              containerPort: 80
+              protocol: TCP
+            - name: web-443
+              containerPort: 443
+              protocol: TCP
+            - hostPort: 51820
+              containerPort: 51820
+              protocol: UDP
+            - hostPort: 21820
+              containerPort: 21820
+              protocol: UDP
+          volumeMounts:
+            # - name: pangolin-config
+            #   mountPath: /var/config
+            - name: pangolin-data
+              mountPath: /var/config
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - SYS_MODULE
+          resources: {}
+        - name: traefik
+          image: traefik:v3.4.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --configFile=/etc/traefik/traefik_config.yml
+          # ports:
+          #   - containerPort: 80
+          #     name: web
+          #     protocol: TCP
+          #   - containerPort: 443
+          #     name: websecure
+          #     protocol: TCP
+          volumeMounts:
+            - name: traefik-config
+              mountPath: /etc/traefik
+              readOnly: true
+            - name: pangolin-data
+              subPath: letsencrypt
+              mountPath: /letsencrypt
+            - name: pangolin-data
+              mountPath: /var/certificates
+              readOnly: true
+            - name: pangolin-data
+              mountPath: /var/dynamic
+              readOnly: true
+          resources: {}
+      volumes:
+        - name: gerbil-config
+          persistentVolumeClaim:
+            claimName: gerbil-config
+        - name: traefik-config
+          configMap:
+            name: traefik-config
+        - name: pangolin-config
+          configMap:
+            name: pangolin-config
+        # - name: pangolin-config
+        #   persistentVolumeClaim:
+        #     claimName: pangolin-config
+        - name: pangolin-data
+          persistentVolumeClaim:
+            claimName: pangolin-data

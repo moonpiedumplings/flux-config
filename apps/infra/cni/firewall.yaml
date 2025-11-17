@@ -1,0 +1,36 @@
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: firewall
+spec:
+  nodeSelector: {}
+  ingress:
+    - toPorts:
+        - ports:
+          - port: "22022"
+            protocol: TCP
+          - port: "6443"
+            protocol: TCP
+          - port: "80"
+            protocol: TCP
+          - port: "443"
+            protocol: "TCP"
+          - port: "22"
+            protocol: "TCP"
+    - fromEntities:
+        - cluster
+        - host
+      # toPorts:
+      #   - ports:
+      #       # kubernetes metric server
+      #       - port: "10250"
+      #         protocol: TCP
+      #       # ceph monitors
+      #       - port: "3300"
+      #         protocol: TCP
+      #       - port: "6789"
+      #         protocol: TCP
+      #       # Ceph OSD
+      #       - port: "6800-7300"
+      #         protocol: TCP

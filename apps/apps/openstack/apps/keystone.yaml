@@ -8,12 +8,13 @@ spec:
   chart:
     spec:
       chart: keystone
+      version: "<=2025.2"
       reconcileStrategy: ChartVersion
-      version: "<=2025.1"
       sourceRef:
         kind: HelmRepository
         name: openstack-helm
   interval: 1m0s
+  timeout: 30m0s
   install:
     disableWait: true
   dependsOn:
@@ -39,20 +40,20 @@ spec:
   values:
     images:
       tags:
-        bootstrap: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        db_init: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        db_drop: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        # keystone_api: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
+        bootstrap: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        db_init: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        db_drop: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        # keystone_api: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
         # Custom image comes with apache mod openid
-        keystone_api: "docker.io/moonpiedumplings/keystone:2025.1-ubuntu_noble"
-        keystone_bootstrap: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        keystone_credential_rotate: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
-        keystone_credential_setup: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
-        keystone_db_sync: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
-        keystone_domain_manage: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
-        keystone_fernet_rotate: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
-        keystone_fernet_setup: "quay.io/airshipit/keystone:2025.1-ubuntu_noble"
-        ks_user: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
+        keystone_api: "docker.io/moonpiedumplings/keystone:2025.2-ubuntu_noble"
+        keystone_bootstrap: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        keystone_credential_rotate: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
+        keystone_credential_setup: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
+        keystone_db_sync: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
+        keystone_domain_manage: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
+        keystone_fernet_rotate: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
+        keystone_fernet_setup: "quay.io/airshipit/keystone:2025.2-ubuntu_noble"
+        ks_user: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
     pod:
       mounts:
         keystone_api:
@@ -91,11 +92,13 @@ spec:
           backend_argument: memcached_expire_time:3600
         DEFAULT:
           max_token_size: 512
-        # See https://docs.openstack.org/releasenotes/keystone/2025.1.html
-        # See https://opendev.org/openstack/keystone/commit/0d2cc1a3af4dbd2825cef5992056bffe935eaadd
-        wsgi_script_name: null
+      # See https://docs.openstack.org/releasenotes/keystone/2025.1.html
+      # See https://opendev.org/openstack/keystone/commit/0d2cc1a3af4dbd2825cef5992056bffe935eaadd
+      # Must be set twice I think, once in conf and once top level
+      wsgi_script_name: "wsgi.py"
       wsgi_keystone: |
         {{- $portInt := tuple "identity" "service" "api" $ | include "helm-toolkit.endpoints.endpoint_port_lookup" }}
+        {{- $wsgiScript := .Values.conf.wsgi_script_name }}
 
         Listen 0.0.0.0:{{ $portInt }}
 
@@ -110,9 +113,12 @@ spec:
         <VirtualHost *:{{ $portInt }}>
             WSGIDaemonProcess keystone-public processes=1 threads=1 user=keystone group=keystone display-name=%{GROUP}
             WSGIProcessGroup keystone-public
-            WSGIScriptAlias / /var/www/cgi-bin/keystone/keystone-wsgi-public
+            WSGIScriptAlias / /var/www/cgi-bin/keystone/{{ $wsgiScript }}
             WSGIApplicationGroup %{GLOBAL}
             WSGIPassAuthorization On
+            ErrorLogFormat "%{cu}t %M"
+            ErrorLog /dev/stdout
+
 
             # OIDC
             OIDCClaimPrefix "OIDC-"

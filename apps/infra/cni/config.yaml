@@ -1,0 +1,44 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-cilium
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    kubeProxyReplacement: true
+    socketLB:
+      hostNamespaceOnly: true
+    cluster:
+      name: "default"
+      id: 0
+    cni:
+      exclusive: false
+    hostFirewall:
+      enabled: true
+    envoy:
+      prometheus:
+        enabled: false
+    bpf:
+      monitorAggregation: medium 
+      monitorAggregationInterval: 5s   
+    l2announcements:
+      enabled: false
+    tunnelProtocol: geneve
+    routingMode: tunnel
+    extraConfig:
+      devices: "eth0"
+    # loadBalancer:
+    #   acceleration: disabled
+    # ipam:
+    #   mode: kubernetes
+    # enableIPv4: true
+    # enableIPv4Masquerade: true
+    # enableIPMasqAgent: true
+    # ipv4NativeRoutingCIDR: "10.244.0.0/16"
+    operator:
+      replicas: 1
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 100%
+          maxUnavailable: 100%

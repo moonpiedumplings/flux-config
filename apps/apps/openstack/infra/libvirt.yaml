@@ -8,6 +8,7 @@ spec:
   chart:
     spec:
       chart: libvirt
+      version: "<=2025.2"
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
@@ -24,7 +25,7 @@ spec:
       role_cert_manager: true
     images:
       tags:
-        libvirt: docker.io/openstackhelm/libvirt:2025.1-ubuntu_noble
+        libvirt: docker.io/openstackhelm/libvirt:2025.2-ubuntu_noble
     conf:
       ceph:
         enabled: true

@@ -8,14 +8,15 @@ spec:
   chart:
     spec:
       chart: cinder
+      version: "<=2025.2"
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
         name: openstack-helm
   interval: 1m0s
+  timeout: 30m0s
   install:
     disableWait: true
-  timeout: 10m0s
   dependsOn:
     - name: mariadb
     - name: memcached
@@ -40,18 +41,18 @@ spec:
   values:
     images:
       tags:
-        db_init: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        cinder_db_sync: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
-        db_drop: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        ks_user: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        ks_service: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        ks_endpoints: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        cinder_api: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
-        bootstrap: "quay.io/airshipit/heat:2025.1-ubuntu_noble"
-        cinder_scheduler: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
-        cinder_volume: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
-        cinder_volume_usage_audit: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
-        cinder_db_purge: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
+        db_init: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        cinder_db_sync: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
+        db_drop: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        ks_user: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        ks_service: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        ks_endpoints: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        cinder_api: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
+        bootstrap: "quay.io/airshipit/heat:2025.2-ubuntu_noble"
+        cinder_scheduler: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
+        cinder_volume: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
+        cinder_volume_usage_audit: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
+        cinder_db_purge: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
         cinder_storage_init: "docker.io/openstackhelm/ceph-config-helper:latest-ubuntu_jammy"
-        cinder_backup: "quay.io/airshipit/cinder:2025.1-ubuntu_noble"
+        cinder_backup: "quay.io/airshipit/cinder:2025.2-ubuntu_noble"
         cinder_backup_storage_init: "docker.io/openstackhelm/ceph-config-helper:latest-ubuntu_jammy"
