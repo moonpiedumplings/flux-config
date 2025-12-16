@@ -27,14 +27,12 @@ spec:
     routingMode: tunnel
     extraConfig:
       devices: "eth0"
-    # loadBalancer:
-    #   acceleration: disabled
-    # ipam:
-    #   mode: kubernetes
-    # enableIPv4: true
-    # enableIPv4Masquerade: true
-    # enableIPMasqAgent: true
-    # ipv4NativeRoutingCIDR: "10.244.0.0/16"
+    hubble:
+      enabled: true
+      relay:
+        enabled: true
+      ui:
+        enabled: true
     operator:
       replicas: 1
       updateStrategy:

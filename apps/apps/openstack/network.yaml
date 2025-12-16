@@ -1,0 +1,10 @@
+project: default
+name: br-inc
+description: For openstack
+type: bridge
+config:
+  bridge.driver: openvswitch
+  ipv4.address: 10.88.0.1/24
+  ipv4.dhcp: 'false'
+  ipv4.nat: 'true'
+  ipv6.address: none

@@ -12,25 +12,33 @@ spec:
             protocol: TCP
           - port: "6443"
             protocol: TCP
+          - port: "8443"
+            protocol: TCP
           - port: "80"
             protocol: TCP
           - port: "443"
             protocol: "TCP"
           - port: "22"
             protocol: "TCP"
-    - fromEntities:
-        - cluster
-        - host
-      # toPorts:
-      #   - ports:
-      #       # kubernetes metric server
-      #       - port: "10250"
-      #         protocol: TCP
-      #       # ceph monitors
-      #       - port: "3300"
-      #         protocol: TCP
-      #       - port: "6789"
-      #         protocol: TCP
-      #       # Ceph OSD
-      #       - port: "6800-7300"
-      #         protocol: TCP
+    - fromEndpoints:
+        - matchLabels: {}
+    # - fromEntities:
+    #     - cluster
+    #     - host
+    #   toPorts:
+    #     - ports:
+    #         # kubernetes metric server
+    #         - port: "10250"
+    #           protocol: TCP
+    #         # ceph monitors
+    #         - port: "3300"
+    #           protocol: TCP
+    #         - port: "6789"
+    #           protocol: TCP
+    #         # Ceph OSD
+    #         - port: "6800-7300"
+    #           protocol: TCP
+    #         # I don't actually know what this is
+    #         # Just that cilium hubble needs it
+    #         - port: "4244"
+    #           protocol: TCP

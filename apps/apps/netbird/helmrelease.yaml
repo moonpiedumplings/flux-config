@@ -14,6 +14,8 @@ spec:
         name: netbird
   interval: 1m0s
   values:
+    auth:
+      authority: https://idp.moonpiedumpl.ing/app
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

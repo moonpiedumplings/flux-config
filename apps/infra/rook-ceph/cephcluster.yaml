@@ -83,7 +83,9 @@ spec:
         periodicity: daily # one of: hourly, daily, weekly, monthly
         maxLogSize: 500M # SUFFIX may be 'M' or 'G'. Must be at least 1M. 
       cleanupPolicy:
-        confirmation: "yes-really-destroy-data"
+        # I thought I was clever with this one. I really wasn't
+        # confirmation: "yes-really-destroy-data"
+        confirmation: ""
         sanitizeDisks:
           method: quick
           dataSource: zero

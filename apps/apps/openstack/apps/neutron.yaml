@@ -77,7 +77,7 @@ spec:
           ml2_type_flat:
             flat_networks: public,incus
         openvswitch_agent:
-          ovs:  
+          ovs:
             bridge_mappings: public:br-ex,incus:br-inc
     network:
       server:

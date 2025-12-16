@@ -83,6 +83,7 @@ spec:
           </Virtualhost>
         local_settings:
           config:
+            keystone_multidomain_support: "False"
             openstack_enable_password_retrieve: "True"
             secure_proxy_ssl_header: true
             csrf_trusted_origins:
@@ -99,6 +100,18 @@ spec:
                   protocol: "openid"
             allowed_hosts:
               - openstack.moonpiedumpl.ing
+            raw:
+              system_scope_services: |
+                # Enable system-scope token usage in Horizon
+                # This list controls for which services Horizon will request
+                # a system-scoped token and show the "System scope" context.
+                SYSTEM_SCOPE_SERVICES = [
+                    "identity",   # keystone
+                    "compute",    # nova
+                    "volumev3",   # cinder v3
+                    "network",    # neutron
+                ]
+                OPENSTACK_KEYSTONE_SYSTEM_SCOPE_ENABLED = True
     network:
       dashboard:
         ingress:

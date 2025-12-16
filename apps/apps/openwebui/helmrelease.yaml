@@ -26,14 +26,24 @@ spec:
           name: owui-secrets
           key: OPENAPI_API_KEY
     extraEnvVars:
+      - name: ENABLE_PERSISTENT_CONFIG
+        value: "False"
+      - name: CORS_ALLOW_ORIGIN
+        value: "https://chat.moonpiedumpl.ing"
       - name: ENABLE_OAUTH_SIGNUP
-        value: "TRUE"
+        value: "True"
       - name: ENABLE_OAUTH_PERSISTENT_CONFIG
         value: "False"
       - name: ENABLE_INITIAL_ADMIN_SIGNUP
         value: "False"
       - name: ENABLE_LOGIN_FORM
         value: "False"
+      - name: ENABLE_OAUTH_WITHOUT_EMAIL
+        value: "True"
+      - name: ENABLE_OAUTH_EMAIL_FALLBACK
+        value: "True"
+      - name: OAUTH_SUB_CLAIM
+        value: "preferred_username"
     openaiBaseApiUrl: http://owui-pipelines.owui.svc.cluster.local:9099
     ollama:
       enabled: false
@@ -55,12 +65,12 @@ spec:
         allowedRoles: "layer8,admins,tester"
       oidc:
         enabled: true
-        clientId: oLFN3rOToiqlebjjoE0hWWQCK3FUJx4BNsAZVkfF
+        clientId: chat
         clientExistingSecret: owui-secrets
         clientExistingSecretKey: ssoClientSecret
         providerName: "Authentik"
         providerUrl: "https://idp.moonpiedumpl.ing/application/o/chat/.well-known/openid-configuration"
-        scopes: "openid profile email"
+        scopes: "openid profile email sub"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

@@ -13,7 +13,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: openstack-helm
-      # version: "2025.1.4"
   interval: 1m0s
   install:
     disableWait: true
