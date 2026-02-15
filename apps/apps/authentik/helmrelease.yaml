@@ -13,7 +13,7 @@ spec:
         kind: HelmRepository
         name: authentik
         # Figure out what version I should have
-      version: "<=2025.8"
+      version: "<=2025.12"
   interval: 1m0s
   valuesFrom:
     - kind: Secret

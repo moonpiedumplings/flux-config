@@ -13,23 +13,24 @@ spec:
         kind: HelmRepository
         name: openwebui
   interval: 10m0s
-  valuesFrom:
-    - kind: Secret
-      name: owui-helm-secrets
-      valuesKey: values.yaml
+  # valuesFrom:
+  #   - kind: Secret
+  #     name: owui-helm-secrets
+  #     valuesKey: values.yaml
   values:
     extraEnvFrom:
-      - secretRef:
-          name: owui-secrets
-          key: OLLAMA_BASE_URL
       - secretRef:
           name: owui-secrets
           key: OPENAPI_API_KEY
     extraEnvVars:
       - name: ENABLE_PERSISTENT_CONFIG
-        value: "False"
+        value: "True"
       - name: CORS_ALLOW_ORIGIN
         value: "https://chat.moonpiedumpl.ing"
+      - name: OLLAMA_BASE_URL
+        value: "http://ollama.owui.svc.cluster.local:11434"
+      - name: ENABLE_OLLAMA_API
+        value: "True"
       - name: ENABLE_OAUTH_SIGNUP
         value: "True"
       - name: ENABLE_OAUTH_PERSISTENT_CONFIG
@@ -85,53 +86,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ollama
-  postRenderers:
-    - kustomize:
-        patches:
-          - patch: |
-              - op: remove
-                path: /spec/template/spec/containers/0/ports
-            target:
-              kind: Deployment
-              name: ollama
-          - patch: |
-              - op: replace
-                path: /spec/template/spec/containers/0/env/0/value
-                value: localhost:11434
-            target:
-              kind: Deployment
-              name: ollama
-          - patch: |
-              - op: remove
-                path: /spec/template/spec/containers/0/readinessProbe
-            target:
-              kind: Deployment
-              name: ollama
-          - patch: |
-              - op: add
-                path: /spec/template/spec/containers/-
-                value:
-                  name: caddy
-                  image: docker.io/library/caddy
-                  ports:
-                    - containerPort: 80
-                      name: http
-                  volumeMounts:
-                  - name: caddy-config
-                    mountPath: /etc/caddy/
-            target:
-              kind: Deployment
-              name: ollama
-          - patch: |
-              - op: add
-                path: /spec/template/spec/volumes/-
-                value:
-                  name: caddy-config
-                  configMap:
-                    name: caddy-config
-            target:
-              kind: Deployment
-              name: ollama
   interval: 10m0s
   values:
     persistentVolume:

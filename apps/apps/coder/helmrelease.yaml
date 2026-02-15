@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: coder
-      version: "<=2.27"
+      version: "<=2.30"
   interval: 10m0s
   values:
     coder:

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  # Done because ollama doesn't have auth by default
+  name: ollama-lockdown
+  namespace: owui
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: ollama
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/instance: openwebui
+      - podSelector:
+          matchLabels:
+            app.kubernetes.io/instance: owui-pipeliness
+  egress:
+    - {}
