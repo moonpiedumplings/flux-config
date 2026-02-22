@@ -1,0 +1,118 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-base
+  namespace: istio-system
+spec:
+  chart:
+    spec:
+      chart: base
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+  interval: 1m0s
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-cni
+  namespace: istio-system
+spec:
+  chart:
+    spec:
+      chart: cni
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+  interval: 1m0s
+  dependsOn:
+    - name: istio-base
+  values:
+    profile: ambient
+    # cni:
+    #   # ambient:
+    #   #   enabled: true
+    #   cniBinDir: /opt/cni/bin
+    #   cniConfDir: /etc/cni/net.d
+    #   cniConfFileName: 05-cilium.conflist
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istiod
+  namespace: istio-system
+spec:
+  chart:
+    spec:
+      chart: istiod
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+  interval: 1m0s
+  dependsOn:
+    - name: istio-base
+    - name: istio-cni
+  values:
+    profile: ambient
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ztunnel
+  namespace: istio-system
+spec:
+  chart:
+    spec:
+      chart: ztunnel
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+  interval: 1m0s
+  dependsOn:
+    - name: istiod
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-gateway
+  namespace: istio-system
+spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |
+              - op: replace
+                path: /spec/template/spec/containers/0/ports
+                value:
+                  - containerPort: 15090
+                    name: http-envoy-prom
+                    protocol: TCP
+                  - hostPort: 80
+                    containerPort: 80
+                    name: http
+                    protocol: TCP
+                  - hostPort: 443
+                    containerPort: 443
+                    name: https
+                    protocol: TCP
+            target:
+              kind: Deployment
+              name: istio-gateway
+  chart:
+      spec:
+        chart: gateway
+        reconcileStrategy: ChartVersion
+        sourceRef:
+          kind: HelmRepository
+          name: istio
+  interval: 1m0s
+  dependsOn:
+    - name: ztunnel
+  values:
+    service:
+      type: None
