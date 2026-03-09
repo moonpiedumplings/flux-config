@@ -1,0 +1,42 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  chart:
+    spec:
+      chart: traefik
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+  interval: 1m0s
+  values:
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
+    ingressClass:
+      enabled: true
+      isDefaultClass: true
+    experimental:
+      kubernetesGateway:
+        enabled: true
+    gateway:
+      enabled: true
+      experimentalChannel: true
+    ports:
+      web:
+        hostPort: 80
+      websecure:
+        hostPort: 443
+    service:
+      enabled: false
+    additionalArguments:
+      - "--serversTransport.insecureSkipVerify=true"
+      - "--entrypoints.websecure.transport.respondingTimeouts.readTimeout=1800s"
+      -  "-entrypoints.websecure.transport.respondingTimeouts.idleTimeout=1800s"
+

@@ -37,8 +37,8 @@ spec:
     persistence:
       enabled: true
     service:
-      # ssh:
-      # Defaults to clusterip service with port 22
+      ssh:
+        hostPort: 22
       http:
         type: ClusterIP
     gitea:
