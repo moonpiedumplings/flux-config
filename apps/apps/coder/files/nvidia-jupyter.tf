@@ -25,7 +25,7 @@ variable "use_kubeconfig" {
   Set this to true if the Coder host is running outside the Kubernetes cluster
   for workspaces.  A valid "~/.kube/config" must be present on the Coder host.
   EOF
-  default     = false
+  default     = true
 }
 
 variable "namespace" {
@@ -75,7 +75,8 @@ data "coder_parameter" "home_disk_size" {
 
 provider "kubernetes" {
   # Authenticate via ~/.kube/config or a Coder-specific ServiceAccount, depending on admin preferences
-  config_path = var.use_kubeconfig == true ? "~/.kube/config" : null
+  #config_path = var.use_kubeconfig == true ? "~/.kube/config" : null
+  config_path = null
 }
 
 data "coder_workspace" "me" {}
@@ -86,8 +87,6 @@ resource "coder_agent" "main" {
   arch           = "amd64"
   startup_script = <<-EOT
     set -e
-    
-    setcap cap_net_raw+ep /usr/lib/nmap/nmap
 
   EOT
 
@@ -115,7 +114,7 @@ resource "coder_agent" "main" {
   metadata {
     display_name = "Home Disk"
     key          = "3_home_disk"
-    script       = "coder stat disk --path $${HOME}"
+    script       = "coder stat disk --path /home/joyvan"
     interval     = 60
     timeout      = 1
   }
@@ -148,18 +147,18 @@ resource "coder_agent" "main" {
   }
 }
 
-resource "coder_app" "selkies" {
+resource "coder_app" "jupyter" {
   agent_id     = coder_agent.main.id
-  slug         = "selkies"
-  display_name = "Web Desktop"
-  url          = "http://localhost:3000"
-  #icon         = "https://avatars.githubusercontent.com/u/44181855?s=280&v=4"
-  icon         = "https://avatars.githubusercontent.com/u/68121597?s=280&v=4"
+  slug         = "jupyter"
+  display_name = "Jupyter Labs"
+  url          = "http://localhost:8888"
+  icon         = "https://avatars.githubusercontent.com/u/7388996?s=200&v=4"
   subdomain    = true
   share        = "owner"
+
 }
 
-resource "kubernetes_persistent_volume_claim" "home" {
+resource "kubernetes_persistent_volume_claim_v1" "home" {
   metadata {
     name      = "coder-${data.coder_workspace.me.id}-home"
     namespace = var.namespace
@@ -189,10 +188,11 @@ resource "kubernetes_persistent_volume_claim" "home" {
   }
 }
 
-resource "kubernetes_deployment" "main" {
+
+resource "kubernetes_deployment_v1" "main" {
   count = data.coder_workspace.me.start_count
   depends_on = [
-    kubernetes_persistent_volume_claim.home
+    kubernetes_persistent_volume_claim_v1.home
   ]
   wait_for_rollout = false
   metadata {
@@ -245,37 +245,43 @@ resource "kubernetes_deployment" "main" {
         }
       }
       spec {
+        runtime_class_name = "nvidia"
         security_context {
           run_as_user     = 911
           fs_group        = 911
           run_as_non_root = true
         }
 
+        init_container {
+          name = "init"
+          image = "docker.io/library/busybox:latest"
+          command = ["sh", "-c", "echo ${coder_agent.main.token} > /secrets/token"]
+
+          volume_mount {
+            mount_path = "/secrets"
+            name = "auth-token"
+          }
+        }
+
         container {
-          name              = "dev"
-          image             = "docker.io/linuxserver/kali-linux:latest"
-          image_pull_policy = "Always"
+          name              = "main"
+          image             = "ghcr.io/kubeflow/kubeflow/notebook-servers/jupyter-pytorch-cuda-full"
+          image_pull_policy = "IfNotPresent"
           command = ["/init"]
           
           security_context {
-            run_as_user = "0"
+            run_as_user = "1000"
+            run_as_group = "1000"
             capabilities {
                 # adding net raw gives permission to do ping and nmap
                 add = ["NET_RAW"]
               }
           }
-          env {
-            name  = "CODER_AGENT_TOKEN"
-            value = coder_agent.main.token
-          }
-          lifecycle {
-            post_start {
-              exec {
-                # This is a pretty brutal hack that lets me essentially inject an extra daemon into the container.
-                command = ["screen", "-dmS", "coder_screen", "sh", "-c", coder_agent.main.init_script]
-              }
-            }
-          }
+          # env {
+          #   # name  = "CODER_AGENT_TOKEN"
+          #   # value = coder_agent.main.token
+          # }
+
           resources {
             requests = {
               "cpu"    = "250m"
@@ -287,19 +293,49 @@ resource "kubernetes_deployment" "main" {
             }
           }
           volume_mount {
-            mount_path = "/config"
+            mount_path = "/home/joyvan"
             name       = "home"
             read_only  = false
           }
+
+          volume_mount {
+            mount_path = "/etc/services.d/coder"
+            name = "jupyter-startup-dir"
+            read_only = true
+          }
+
+          volume_mount {
+            mount_path = "/secrets"
+            name = "auth-token"
+            read_only = true
+          }
+
+
         }
 
         volume {
           name = "home"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.home.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.home.metadata.0.name
             read_only  = false
           }
         }
+
+        volume {
+          name = "jupyter-startup-dir"
+          config_map {
+            name = "jupyter-startup-dir"
+            default_mode = "0777"
+          }
+        }
+
+        volume {
+          name = "auth-token"
+          empty_dir {
+            size_limit = "10Mi"
+          }
+        }
+
 
         affinity {
           // This affinity attempts to spread out all workspace pods evenly across
