@@ -47,6 +47,22 @@ spec:
           tls:
             - hosts: [idp.moonpiedumpl.ing]
               secretName: sso-acme
+      volumes:
+        - name: incus-creds
+          secret:
+            secretName: incus-secrets
+      volumeMounts:
+        - name: incus-creds
+          mountPath: /incus-secrets
+    worker:
+      volumes:
+        - name: incus-creds
+          secret:
+            secretName: incus-secrets
+      volumeMounts:
+        - name: incus-creds
+          mountPath: /incus-secrets
+          readOnly: true
     postgresql:
       enabled: false
     redis:
