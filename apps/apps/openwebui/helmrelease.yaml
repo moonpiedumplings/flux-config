@@ -88,6 +88,9 @@ spec:
         name: ollama
   interval: 10m0s
   values:
+    # Temporary measure to get gemma4
+    image:
+      tag: 0.20.2
     persistentVolume:
       enabled: true
       existingClaim: ollama

@@ -1,0 +1,260 @@
+context: {}
+entries:
+- attrs:
+    authentication: require_unauthenticated
+    background: ''
+    compatibility_mode: false
+    denied_action: message_continue
+    designation: enrollment
+    layout: stacked
+    name: Default enrollment Flow
+    policy_engine_mode: any
+    title: Welcome to authentik!
+  conditions: []
+  identifiers:
+    pk: 1d8bfdaa-79fa-4256-a181-972bd48a1554
+    slug: default-enrollment-flow
+  model: authentik_flows.flow
+  permissions: []
+  state: present
+- attrs:
+    field_key: username
+    initial_value: ''
+    initial_value_expression: false
+    label: Username
+    name: default-enrollment-field-username
+    order: 0
+    placeholder: Username
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: username
+  conditions: []
+  identifiers:
+    pk: 8f252fcb-2dff-4e60-b4ea-ad738cf33468
+  model: authentik_stages_prompt.prompt
+  permissions: []
+  state: present
+- attrs:
+    field_key: password_repeat
+    initial_value: ''
+    initial_value_expression: false
+    label: Password (repeat)
+    name: default-enrollment-field-password-repeat
+    order: 1
+    placeholder: Password (repeat)
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: password
+  conditions: []
+  identifiers:
+    pk: 9ca1d370-3fa8-462b-934b-0b20a663af9f
+  model: authentik_stages_prompt.prompt
+  permissions: []
+  state: present
+- attrs:
+    field_key: password
+    initial_value: ''
+    initial_value_expression: false
+    label: Password
+    name: default-enrollment-field-password
+    order: 0
+    placeholder: Password
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: password
+  conditions: []
+  identifiers:
+    pk: 44330057-b0c0-4ec9-9bf5-e20b86e60d4f
+  model: authentik_stages_prompt.prompt
+  permissions: []
+  state: present
+- attrs:
+    field_key: aup-accepted
+    initial_value: ''
+    initial_value_expression: false
+    label: I agree to follow CSUN's policies regarding use of computing resources.
+    name: acceptable-use
+    order: 10000
+    placeholder: ''
+    placeholder_expression: false
+    required: true
+    sub_text: <br><a href="http://www.csun.edu/policies.">University Policies and
+      Procedures</a>
+    type: checkbox
+  conditions: []
+  identifiers:
+    pk: a2d901d7-d766-4720-b541-186b8300fa67
+  model: authentik_stages_prompt.prompt
+  permissions: []
+  state: present
+- attrs:
+    field_key: email
+    initial_value: ''
+    initial_value_expression: false
+    label: Email
+    name: default-enrollment-field-email
+    order: 1
+    placeholder: Email
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: email
+  conditions: []
+  identifiers:
+    pk: 7195fc8d-6007-4ae1-83f2-2f8b8d91bb9a
+  model: authentik_stages_prompt.prompt
+  permissions: []
+  state: present
+- attrs:
+    amount_digits: 0
+    amount_lowercase: 0
+    amount_symbols: 0
+    amount_uppercase: 0
+    check_have_i_been_pwned: true
+    check_static_rules: false
+    check_zxcvbn: true
+    error_message: ''
+    execution_logging: false
+    hibp_allowed_count: 0
+    length_min: 0
+    name: password-strength-policy
+    password_field: password
+    symbol_charset: '!\"#$%&''()*+,-./:;<=>?@[\]^_`{|}~ '
+    zxcvbn_score_threshold: 3
+  conditions: []
+  identifiers:
+    pk: 2436b88f-abcc-4181-8a4c-179a15caecc5
+  model: authentik_policies_password.passwordpolicy
+  permissions: []
+  state: present
+- attrs:
+    execution_logging: false
+    expression: "if not request.context.get(\"prompt_data\").get(\"username\").isalnum():\n\
+      \    ak_message(\"Only numbers and letters in usernames allowed\")\n    return\
+      \ False\nelif (len(request.context.get(\"prompt_data\").get(\"username\")) >\
+      \ 16):\n    ak_message(\"Username too long, 16 character max\")\n    return\
+      \ False\nelse:\n    return True"
+    name: ascii-usernames
+  conditions: []
+  identifiers:
+    pk: 4b307ae4-7129-499d-afc9-fc247259a55f
+  model: authentik_policies_expression.expressionpolicy
+  permissions: []
+  state: present
+- attrs:
+    continue_flow_without_invitation: false
+  conditions: []
+  identifiers:
+    name: invitation-stage
+    pk: 5d670b27-38b2-4498-a629-d9bce1713456
+  model: authentik_stages_invitation.invitationstage
+  permissions: []
+  state: present
+- attrs:
+    create_users_as_inactive: false
+    create_users_group: 162563b8-4024-4a07-835e-2742bb51c578
+    user_creation_mode: always_create
+    user_path_template: users
+    user_type: internal
+  conditions: []
+  identifiers:
+    name: default-enrollment-user-write
+    pk: 66b597ba-f9f4-41fe-bb66-313bd528bd98
+  model: authentik_stages_user_write.userwritestage
+  permissions: []
+  state: present
+- attrs:
+    geoip_binding: no_binding
+    network_binding: no_binding
+    remember_device: days=30
+    remember_me_offset: seconds=0
+    session_duration: seconds=0
+    terminate_other_sessions: false
+  conditions: []
+  identifiers:
+    name: default-enrollment-user-login
+    pk: b20e63cf-f105-4e84-b572-afd0ef4e34de
+  model: authentik_stages_user_login.userloginstage
+  permissions: []
+  state: present
+- attrs:
+    fields:
+    - 8f252fcb-2dff-4e60-b4ea-ad738cf33468
+    - 9ca1d370-3fa8-462b-934b-0b20a663af9f
+    - 44330057-b0c0-4ec9-9bf5-e20b86e60d4f
+    - a2d901d7-d766-4720-b541-186b8300fa67
+    - 7195fc8d-6007-4ae1-83f2-2f8b8d91bb9a
+    validation_policies:
+    - 2436b88f-abcc-4181-8a4c-179a15caecc5
+    - 4b307ae4-7129-499d-afc9-fc247259a55f
+  conditions: []
+  identifiers:
+    name: default-enrollment-prompt-first
+    pk: fc230ead-8534-401a-9591-7427ae0555b6
+  model: authentik_stages_prompt.promptstage
+  permissions: []
+  state: present
+- attrs:
+    evaluate_on_plan: false
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: true
+  conditions: []
+  identifiers:
+    order: 0
+    pk: fced57bf-7455-48b2-81f4-5a25074d70ad
+    stage: 5d670b27-38b2-4498-a629-d9bce1713456
+    target: 1d8bfdaa-79fa-4256-a181-972bd48a1554
+  model: authentik_flows.flowstagebinding
+  permissions: []
+  state: present
+- attrs:
+    evaluate_on_plan: false
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: true
+  conditions: []
+  identifiers:
+    order: 10
+    pk: 5853b99c-9ddb-4386-8452-3818fa4b1ac1
+    stage: fc230ead-8534-401a-9591-7427ae0555b6
+    target: 1d8bfdaa-79fa-4256-a181-972bd48a1554
+  model: authentik_flows.flowstagebinding
+  permissions: []
+  state: present
+- attrs:
+    evaluate_on_plan: false
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: true
+  conditions: []
+  identifiers:
+    order: 20
+    pk: 1fe621f6-58d9-4e78-b29e-d400b2ec0e22
+    stage: 66b597ba-f9f4-41fe-bb66-313bd528bd98
+    target: 1d8bfdaa-79fa-4256-a181-972bd48a1554
+  model: authentik_flows.flowstagebinding
+  permissions: []
+  state: present
+- attrs:
+    evaluate_on_plan: false
+    invalid_response_action: retry
+    policy_engine_mode: any
+    re_evaluate_policies: true
+  conditions: []
+  identifiers:
+    order: 100
+    pk: 89615cb3-514d-4f58-ba79-7c79bfd4eb84
+    stage: b20e63cf-f105-4e84-b572-afd0ef4e34de
+    target: 1d8bfdaa-79fa-4256-a181-972bd48a1554
+  model: authentik_flows.flowstagebinding
+  permissions: []
+  state: present
+metadata:
+  labels:
+    blueprints.goauthentik.io/generated: 'true'
+  name: authentik Export - 2026-05-16 06:01:15.567933+00:00
+version: 1
